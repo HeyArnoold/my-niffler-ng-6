@@ -8,8 +8,8 @@ import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.generator.DataGenerator.genRandomPassword;
-import static guru.qa.niffler.generator.DataGenerator.genRandomUsername;
+import static guru.qa.niffler.utils.RandomDataUtils.genRandomPassword;
+import static guru.qa.niffler.utils.RandomDataUtils.genRandomUsername;
 
 @ExtendWith(BrowserExtension.class)
 public class RegisterWebTest {
