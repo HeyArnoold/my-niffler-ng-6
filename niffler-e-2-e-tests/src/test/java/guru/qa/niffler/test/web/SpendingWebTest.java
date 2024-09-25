@@ -35,5 +35,10 @@ public class SpendingWebTest {
 
         new MainPage().checkThatTableContainsSpending(newDescription);
     }
+
+    @Test
+    void testJdbc() {
+
+    }
 }
 
