@@ -1,7 +1,5 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.UserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
@@ -21,12 +19,12 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public UserEntity create(UserEntity user) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO user (username, currency, firstname, surname, photo, photo_small, full_name) " +
+                "INSERT INTO public.user (username, currency, firstname, surname, photo, photo_small, full_name) " +
                         "VALUES (?,?,?,?,?,?,?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
             statement.setString(1, user.getUsername());
-            statement.setObject(2, user.getCurrency());
+            statement.setString(2, user.getCurrency().name());
             statement.setString(3, user.getFirstname());
             statement.setString(4, user.getSurname());
             statement.setBytes(5, user.getPhoto());
@@ -52,7 +50,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public Optional<UserEntity> findById(UUID id) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM user WHERE id = ?"
+                "SELECT * FROM public.user WHERE id = ?"
         )) {
             statement.setObject(1, id);
             statement.execute();
@@ -80,7 +78,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM user WHERE username = ?"
+                "SELECT * FROM public.user WHERE username = ?"
         )) {
             statement.setObject(1, username);
             statement.execute();
@@ -108,7 +106,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public void delete(UserEntity user) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM user WHERE id = ?"
+                "DELETE FROM public.user WHERE id = ?"
         )) {
             statement.setObject(1, user.getId());
             statement.executeUpdate();

@@ -6,11 +6,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AuthAuthorityDao {
-    AuthorityEntity create(AuthorityEntity authority);
+    void create(AuthorityEntity... authority);
 
     Optional<AuthorityEntity> findById(UUID id);
 
     Optional<AuthorityEntity> findByUserId(UUID userId);
 
-    void delete(AuthorityEntity authority);
+    void delete(AuthorityEntity... authority);
 }
