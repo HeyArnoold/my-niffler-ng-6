@@ -7,11 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class CategoryRowMapper implements RowMapper<CategoryEntity> {
+public class CategoryEntityRowMapper implements RowMapper<CategoryEntity> {
 
-    public static final CategoryRowMapper instance = new CategoryRowMapper();
+    public static final CategoryEntityRowMapper instance = new CategoryEntityRowMapper();
 
-    private CategoryRowMapper() {
+    private CategoryEntityRowMapper() {
     }
 
     @Override

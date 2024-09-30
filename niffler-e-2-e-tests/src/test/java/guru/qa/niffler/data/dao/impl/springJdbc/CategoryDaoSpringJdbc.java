@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl.springJdbc;
 
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
-import guru.qa.niffler.data.mapper.CategoryRowMapper;
+import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -49,7 +49,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM public.category WHERE id = ?",
-                        CategoryRowMapper.instance,
+                        CategoryEntityRowMapper.instance,
                         id
                 )
         );
@@ -57,16 +57,28 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public Optional<CategoryEntity> findByUsernameAndName(String username, String categoryName) {
-        return Optional.empty();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM public.category WHERE username = ? AND name = ?",
+                        CategoryEntityRowMapper.instance,
+                        username, categoryName
+                )
+        );
     }
 
     @Override
     public List<CategoryEntity> findAllByUsername(String username) {
-        return List.of();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.query(
+                "SELECT * FROM public.category WHERE username = ?",
+                CategoryEntityRowMapper.instance,
+                username);
     }
 
     @Override
     public void delete(CategoryEntity category) {
-
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update("DELETE FROM public.category WHERE id = ?", category.getId());
     }
 }

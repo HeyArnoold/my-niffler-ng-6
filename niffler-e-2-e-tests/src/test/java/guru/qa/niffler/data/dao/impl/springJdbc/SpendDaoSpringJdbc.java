@@ -3,6 +3,7 @@ package guru.qa.niffler.data.dao.impl.springJdbc;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
+import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -50,16 +51,28 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
     @Override
     public Optional<SpendEntity> findById(UUID id) {
-        return Optional.empty();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM public.spend WHERE id = ?",
+                        SpendEntityRowMapper.instance,
+                        id
+                )
+        );
     }
 
     @Override
     public List<SpendEntity> findAllByUsername(String username) {
-        return List.of();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.query(
+                "SELECT * FROM public.spend WHERE username = ?",
+                SpendEntityRowMapper.instance,
+                username);
     }
 
     @Override
     public void delete(SpendEntity spend) {
-
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update("DELETE FROM public.spend WHERE id = ?", spend.getId());
     }
 }

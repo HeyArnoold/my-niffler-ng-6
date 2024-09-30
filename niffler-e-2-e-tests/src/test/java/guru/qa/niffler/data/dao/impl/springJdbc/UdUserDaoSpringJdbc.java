@@ -27,7 +27,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
+                    "INSERT INTO public.user (username, currency, firstname, surname, photo, photo_small, full_name) " +
                             "VALUES (?,?,?,?,?,?,?)",
                     Statement.RETURN_GENERATED_KEYS
             );
@@ -51,7 +51,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
-                        "SELECT * FROM \"user\" WHERE id = ?",
+                        "SELECT * FROM public.user WHERE id = ?",
                         UdUserEntityRowMapper.instance,
                         id
                 )
@@ -60,11 +60,19 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public Optional<UserEntity> findByUsername(String username) {
-        return Optional.empty();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM public.user WHERE username = ?",
+                        UdUserEntityRowMapper.instance,
+                        username
+                )
+        );
     }
 
     @Override
     public void delete(UserEntity user) {
-
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update("DELETE FROM public.user WHERE id = ?", user.getId());
     }
 }
