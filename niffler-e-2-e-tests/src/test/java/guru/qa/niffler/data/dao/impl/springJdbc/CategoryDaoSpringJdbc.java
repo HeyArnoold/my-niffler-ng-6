@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,5 +53,20 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
                         id
                 )
         );
+    }
+
+    @Override
+    public Optional<CategoryEntity> findByUsernameAndName(String username, String categoryName) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<CategoryEntity> findAllByUsername(String username) {
+        return List.of();
+    }
+
+    @Override
+    public void delete(CategoryEntity category) {
+
     }
 }

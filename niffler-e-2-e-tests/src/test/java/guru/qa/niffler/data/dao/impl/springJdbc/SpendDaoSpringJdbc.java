@@ -10,6 +10,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SpendDaoSpringJdbc implements SpendDao {
@@ -44,5 +46,20 @@ public class SpendDaoSpringJdbc implements SpendDao {
         final UUID generatedKey = (UUID) kh.getKeys().get("id");
         spend.setId(generatedKey);
         return spend;
+    }
+
+    @Override
+    public Optional<SpendEntity> findById(UUID id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<SpendEntity> findAllByUsername(String username) {
+        return List.of();
+    }
+
+    @Override
+    public void delete(SpendEntity spend) {
+
     }
 }
