@@ -134,7 +134,7 @@ public class Databases {
         xaTransaction(TRANSACTION_SERIALIZABLE, actions);
     }
 
-    private static DataSource dataSource(String jdbcUrl) {
+    public static DataSource dataSource(String jdbcUrl) {
         return dataSources.computeIfAbsent(
                 jdbcUrl,
                 key -> {

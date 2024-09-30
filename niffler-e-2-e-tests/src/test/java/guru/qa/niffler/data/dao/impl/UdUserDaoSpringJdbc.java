@@ -1,7 +1,7 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.UdUserDao;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -22,7 +22,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
     }
 
     @Override
-    public UserEntity create(UserEntity user) {
+    public UdUserEntity create(UdUserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
@@ -47,7 +47,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
     }
 
     @Override
-    public Optional<UserEntity> findById(UUID id) {
+    public Optional<UdUserEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
@@ -59,12 +59,12 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
     }
 
     @Override
-    public Optional<UserEntity> findByUsername(String username) {
+    public Optional<UdUserEntity> findByUsername(String username) {
         return Optional.empty();
     }
 
     @Override
-    public void delete(UserEntity user) {
+    public void delete(UdUserEntity user) {
 
     }
 }
