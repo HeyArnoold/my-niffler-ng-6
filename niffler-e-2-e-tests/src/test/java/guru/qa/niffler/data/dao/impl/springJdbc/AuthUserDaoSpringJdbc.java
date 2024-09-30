@@ -1,8 +1,8 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.springJdbc;
 
-import guru.qa.niffler.data.dao.UdUserDao;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
+import guru.qa.niffler.data.dao.AuthUserDao;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -13,31 +13,30 @@ import java.sql.Statement;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UdUserDaoSpringJdbc implements UdUserDao {
+public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
   private final DataSource dataSource;
 
-  public UdUserDaoSpringJdbc(DataSource dataSource) {
+  public AuthUserDaoSpringJdbc(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
   @Override
-  public UserEntity create(UserEntity user) {
+  public AuthUserEntity create(AuthUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(
-          "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
-              "VALUES (?,?,?,?,?,?,?)",
+          "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
+              "VALUES (?,?,?,?,?,?)",
           Statement.RETURN_GENERATED_KEYS
       );
       ps.setString(1, user.getUsername());
-      ps.setString(2, user.getCurrency().name());
-      ps.setString(3, user.getFirstname());
-      ps.setString(4, user.getSurname());
-      ps.setBytes(5, user.getPhoto());
-      ps.setBytes(6, user.getPhotoSmall());
-      ps.setString(7, user.getFullname());
+      ps.setString(2, user.getPassword());
+      ps.setBoolean(3, user.getEnabled());
+      ps.setBoolean(4, user.getAccountNonExpired());
+      ps.setBoolean(5, user.getAccountNonLocked());
+      ps.setBoolean(6, user.getCredentialsNonExpired());
       return ps;
     }, kh);
 
@@ -47,12 +46,12 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
   }
 
   @Override
-  public Optional<UserEntity> findById(UUID id) {
+  public Optional<AuthUserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             "SELECT * FROM \"user\" WHERE id = ?",
-            UdUserEntityRowMapper.instance,
+            AuthUserEntityRowMapper.instance,
             id
         )
     );
