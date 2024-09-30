@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class CategoryDaoJdbc implements CategoryDao {
 
-    private static final Config CFG = Config.getInstance();
+  private static final Config CFG = Config.getInstance();
 
     @Override
     public CategoryEntity create(CategoryEntity category) {

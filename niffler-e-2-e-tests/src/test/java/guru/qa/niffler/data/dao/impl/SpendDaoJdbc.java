@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class SpendDaoJdbc implements SpendDao {
 
-    private static final Config CFG = Config.getInstance();
+  private static final Config CFG = Config.getInstance();
 
     @Override
     public SpendEntity create(SpendEntity spend) {
