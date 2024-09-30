@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,7 +24,7 @@ public class UdUserDaoJdbc implements UdUserDao {
     @Override
     public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO \"user\" (username, currency) VALUES (?, ?)",
+                "INSERT INTO public.user (username, currency) VALUES (?, ?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getCurrency().name());
@@ -44,7 +46,7 @@ public class UdUserDaoJdbc implements UdUserDao {
 
     @Override
     public Optional<UserEntity> findById(UUID id) {
-        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM \"user\" WHERE id = ? ")) {
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM public.user WHERE id = ? ")) {
             ps.setObject(1, id);
 
             ps.execute();
@@ -71,7 +73,7 @@ public class UdUserDaoJdbc implements UdUserDao {
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM user WHERE username = ?"
+                "SELECT * FROM public.user WHERE username = ?"
         )) {
             statement.setObject(1, username);
             statement.execute();
@@ -99,12 +101,35 @@ public class UdUserDaoJdbc implements UdUserDao {
     @Override
     public void delete(UserEntity user) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM user WHERE id = ?"
+                "DELETE FROM public.user WHERE id = ?"
         )) {
             statement.setObject(1, user.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        List<UserEntity> users = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM public.user")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    UserEntity user = new UserEntity();
+                    user.setId(rs.getObject("id", UUID.class));
+                    user.setUsername(rs.getString("username"));
+                    user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    user.setFirstname(rs.getString("firstname"));
+                    user.setSurname(rs.getString("surname"));
+                    user.setPhoto(rs.getBytes("photo"));
+                    user.setPhotoSmall(rs.getBytes("photo_small"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return users;
     }
 }

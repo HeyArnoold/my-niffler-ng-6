@@ -75,4 +75,10 @@ public class SpendDaoSpringJdbc implements SpendDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.update("DELETE FROM public.spend WHERE id = ?", spend.getId());
     }
+
+    @Override
+    public List<SpendEntity> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.query("SELECT * FROM public.spend", SpendEntityRowMapper.instance);
+    }
 }
