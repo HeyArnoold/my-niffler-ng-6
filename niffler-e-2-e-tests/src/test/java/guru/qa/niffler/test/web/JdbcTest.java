@@ -5,7 +5,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
-import guru.qa.niffler.service.UserDbClient;
+import guru.qa.niffler.service.UsersDbClient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ public class JdbcTest {
 
     @Test
     void xaTest() {
-        UserDbClient userDbClient = new UserDbClient();
+        UsersDbClient userDbClient = new UsersDbClient();
 
         UserJson user = userDbClient.createUser(
                 new UserJson(
@@ -61,7 +61,7 @@ public class JdbcTest {
 
     @Test
     void springJdbcTest() {
-        UserDbClient usersDbClient = new UserDbClient();
+        UsersDbClient usersDbClient = new UsersDbClient();
         UserJson user = usersDbClient.createUserSpringJdbc(
                 new UserJson(
                         null,

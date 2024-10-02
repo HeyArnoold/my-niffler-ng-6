@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.dao.impl.springJdbc;
 
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthAuthorityRowMapper;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -72,8 +73,8 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public void delete(AuthorityEntity authority) {
+    public void delete(AuthUserEntity authUser) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update("DELETE FROM public.authority WHERE id = ?", authority.getId());
+        jdbcTemplate.update("DELETE FROM public.authority WHERE user_id = ?", authUser.getId());
     }
 }

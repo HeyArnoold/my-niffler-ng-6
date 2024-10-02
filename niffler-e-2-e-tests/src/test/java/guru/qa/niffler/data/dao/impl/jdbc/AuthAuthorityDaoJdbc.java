@@ -103,11 +103,11 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public void delete(AuthorityEntity authority) {
+    public void delete(AuthUserEntity authUser) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "DELETE FROM public.authority WHERE id = ?"
+                "DELETE FROM public.authority WHERE user_id = ?"
         )) {
-            ps.setObject(1, authority.getId());
+            ps.setObject(1, authUser.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
