@@ -3,13 +3,13 @@ package guru.qa.niffler.test.web;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
-import org.junit.jupiter.api.Disabled;
+import guru.qa.niffler.service.UsersDbClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-@Disabled
 public class JdbcTest {
 
   @Test
@@ -22,17 +22,36 @@ public class JdbcTest {
             new Date(),
             new CategoryJson(
                 null,
-                "cat-name-tx-2",
+                "cat-name-tx-3",
                 "duck",
                 false
             ),
             CurrencyValues.RUB,
             1000.0,
-            "spend-name-tx",
-            null
+            "spend-name-tx-3",
+            "duck"
         )
     );
 
     System.out.println(spend);
+  }
+
+  @Test
+  void springJdbcTest() {
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson user = usersDbClient.createUser(
+        new UserJson(
+            null,
+            "valentin-6",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println(user);
   }
 }
