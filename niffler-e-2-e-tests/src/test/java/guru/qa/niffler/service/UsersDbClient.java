@@ -11,7 +11,7 @@ import guru.qa.niffler.data.dao.impl.springJdbc.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.model.UserJson;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +42,7 @@ public class UsersDbClient {
     AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
         e -> {
           AuthorityEntity ae = new AuthorityEntity();
-          ae.setUserId(createdAuthUser.getId());
+          ae.setUser(createdAuthUser);
           ae.setAuthority(e);
           return ae;
         }
@@ -54,7 +54,7 @@ public class UsersDbClient {
     return UserJson.fromEntity(
         new UdUserDaoSpringJdbc(dataSource(CFG.userdataJdbcUrl()))
             .create(
-                UserEntity.fromJson(user)
+                    UdUserEntity.fromJson(user)
             ),
         null
     );
@@ -78,7 +78,7 @@ public class UsersDbClient {
                       Arrays.stream(Authority.values())
                           .map(a -> {
                                 AuthorityEntity ae = new AuthorityEntity();
-                                ae.setUserId(authUser.getId());
+                                ae.setUser(authUser);
                                 ae.setAuthority(a);
                                 return ae;
                               }
@@ -89,7 +89,7 @@ public class UsersDbClient {
             ),
             new XaFunction<>(
                 con -> {
-                  UserEntity ue = new UserEntity();
+                    UdUserEntity ue = new UdUserEntity();
                   ue.setUsername(user.username());
                   ue.setFullname(user.fullname());
                   ue.setCurrency(user.currency());
