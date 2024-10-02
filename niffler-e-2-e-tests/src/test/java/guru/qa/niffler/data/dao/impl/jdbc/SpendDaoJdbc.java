@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
@@ -22,7 +22,7 @@ public class SpendDaoJdbc implements SpendDao {
     @Override
     public SpendEntity create(SpendEntity spend) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO spend (username, spend_date, currency, amount, description, category_id) " +
+                "INSERT INTO public.spend (username, spend_date, currency, amount, description, category_id) " +
                         "VALUES ( ?, ?, ?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
@@ -53,7 +53,7 @@ public class SpendDaoJdbc implements SpendDao {
     @Override
     public Optional<SpendEntity> findById(UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM spend WHERE id = ?"
+                "SELECT * FROM public.spend WHERE id = ?"
         )) {
             ps.setObject(1, id);
             ps.execute();
@@ -80,7 +80,7 @@ public class SpendDaoJdbc implements SpendDao {
     public List<SpendEntity> findAllByUsername(String username) {
         List<SpendEntity> spends = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM spend WHERE username = ?"
+                "SELECT * FROM public.spend WHERE username = ?"
         )) {
             statement.setObject(1, username);
             try (ResultSet rs = statement.executeQuery()) {
@@ -105,12 +105,34 @@ public class SpendDaoJdbc implements SpendDao {
     @Override
     public void delete(SpendEntity spend) {
         try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM spend WHERE id = ?"
+                "DELETE FROM public.spend WHERE id = ?"
         )) {
             statement.setObject(1, spend.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<SpendEntity> findAll() {
+        List<SpendEntity> spends = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM public.spend");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                SpendEntity se = new SpendEntity();
+                se.setId(rs.getObject("id", UUID.class));
+                se.setUsername(rs.getString("username"));
+                se.setSpendDate(rs.getDate("spend_date"));
+                se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                se.setAmount(rs.getDouble("amount"));
+                se.setDescription(rs.getString("description"));
+                se.setCategory(rs.getObject("category_id", CategoryEntity.class));
+                spends.add(se);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return spends;
     }
 }

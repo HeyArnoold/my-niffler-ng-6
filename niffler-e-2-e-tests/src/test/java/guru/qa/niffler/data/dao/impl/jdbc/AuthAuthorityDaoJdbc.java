@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -9,10 +9,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
+
     private final Connection connection;
 
     public AuthAuthorityDaoJdbc(Connection connection) {
@@ -25,7 +28,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
                 "INSERT INTO public.authority (user_id, authority) VALUES (?, ?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             for (AuthorityEntity a : authority) {
-                ps.setObject(1, a.getUser().getId());
+                ps.setObject(1, a.getUser());
                 ps.setString(2, a.getAuthority().name());
                 ps.addBatch();
                 ps.clearParameters();
@@ -34,6 +37,23 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<AuthorityEntity> findAll() {
+        List<AuthorityEntity> authorities = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM public.authority");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                AuthorityEntity authority = new AuthorityEntity();
+                authority.setUser(rs.getObject("user_id", AuthUserEntity.class));
+                authority.setAuthority(Authority.valueOf(rs.getString("authority")));
+                authorities.add(authority);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return authorities;
     }
 
     @Override
@@ -83,16 +103,12 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public void delete(AuthorityEntity... authority) {
+    public void delete(AuthUserEntity authUser) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "DELETE FROM public.authority WHERE id = ?"
+                "DELETE FROM public.authority WHERE user_id = ?"
         )) {
-            for (AuthorityEntity a : authority) {
-                ps.setObject(1, a.getUser().getId());
-                ps.addBatch();
-                ps.clearParameters();
-            }
-            ps.executeBatch();
+            ps.setObject(1, authUser.getId());
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
