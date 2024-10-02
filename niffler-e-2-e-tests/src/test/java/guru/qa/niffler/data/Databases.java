@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
+import static java.sql.Connection.TRANSACTION_SERIALIZABLE;
 
 public class Databases {
     private Databases() {
@@ -31,11 +31,11 @@ public class Databases {
     public record XaConsumer(Consumer<Connection> function, String jdbcUrl) {
     }
 
-    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, int isolationLvl) {
+    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, int transactionIsolation) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
-            connection.setTransactionIsolation(isolationLvl);
+            connection.setTransactionIsolation(transactionIsolation);
             connection.setAutoCommit(false);
             T result = function.apply(connection);
             connection.commit();
@@ -55,16 +55,18 @@ public class Databases {
     }
 
     public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
-        return transaction(function, jdbcUrl, TRANSACTION_READ_COMMITTED);
+        return transaction(function, jdbcUrl, TRANSACTION_SERIALIZABLE);
     }
 
-    public static <T> T xaTransaction(XaFunction<T>... actions) {
+    public static <T> T xaTransaction(int transactionIsolation, XaFunction<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
             T result = null;
             for (XaFunction<T> action : actions) {
-                result = action.function.apply(connection(action.jdbcUrl));
+                Connection connection = connection(action.jdbcUrl);
+                connection.setTransactionIsolation(transactionIsolation);
+                result = action.function.apply(connection);
             }
             ut.commit();
             return result;
@@ -78,11 +80,15 @@ public class Databases {
         }
     }
 
-    public static void transaction(Consumer<Connection> consumer, String jdbcUrl, int isolationLvl) {
+    public static <T> T xaTransaction(XaFunction<T>... actions) {
+        return xaTransaction(TRANSACTION_SERIALIZABLE, actions);
+    }
+
+    public static void transaction(Consumer<Connection> consumer, String jdbcUrl, int transactionIsolation) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
-            connection.setTransactionIsolation(isolationLvl);
+            connection.setTransactionIsolation(transactionIsolation);
             connection.setAutoCommit(false);
             consumer.accept(connection);
             connection.commit();
@@ -101,15 +107,17 @@ public class Databases {
     }
 
     public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
-        transaction(consumer, jdbcUrl, TRANSACTION_READ_COMMITTED);
+        transaction(consumer, jdbcUrl, TRANSACTION_SERIALIZABLE);
     }
 
-    public static void xaTransaction(XaConsumer... actions) {
+    public static void xaTransaction(int transactionIsolation, XaConsumer... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
             for (XaConsumer action : actions) {
-                action.function.accept(connection(action.jdbcUrl));
+                Connection connection = connection(action.jdbcUrl);
+                connection.setTransactionIsolation(transactionIsolation);
+                action.function.accept(connection);
             }
             ut.commit();
         } catch (Exception e) {
@@ -120,6 +128,10 @@ public class Databases {
             }
             throw new RuntimeException(e);
         }
+    }
+
+    public static void xaTransaction(XaConsumer... actions) {
+        xaTransaction(TRANSACTION_SERIALIZABLE, actions);
     }
 
     public static DataSource dataSource(String jdbcUrl) {
