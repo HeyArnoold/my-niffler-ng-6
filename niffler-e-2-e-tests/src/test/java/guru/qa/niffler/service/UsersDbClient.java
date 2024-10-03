@@ -50,7 +50,6 @@ public class UsersDbClient {
             )
     );
 
-
     @SuppressWarnings("unchecked")
     public UserJson createUser(UserJson user, String password) {
         return UserJson.fromEntity(
