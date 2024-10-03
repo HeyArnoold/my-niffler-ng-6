@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Disabled
 public class JdbcTest {
@@ -76,5 +77,22 @@ public class JdbcTest {
                 )
         );
         System.out.println(user);
+    }
+
+    @Test
+    void deleteUserTest() {
+        UsersDbClient usersDbClient = new UsersDbClient();
+        usersDbClient.deleteUser(
+                new UserJson(
+                        UUID.fromString("63ed31c2-7e55-11ef-bcbb-0242ac110002"),
+                        "createByXA",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null,
+                        null
+                ));
     }
 }
