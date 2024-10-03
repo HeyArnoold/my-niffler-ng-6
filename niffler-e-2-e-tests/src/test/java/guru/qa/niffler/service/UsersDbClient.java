@@ -61,7 +61,6 @@ public class UsersDbClient {
                     );
             udUserDao.findByUsername(user.username())
                     .ifPresent(udUserDao::delete);
-            return null;
         });
     }
 
