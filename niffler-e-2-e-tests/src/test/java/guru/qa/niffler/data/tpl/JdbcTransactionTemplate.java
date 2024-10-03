@@ -27,7 +27,9 @@ public class JdbcTransactionTemplate {
             connection = holder.connection();
             connection.setTransactionIsolation(isolationLvl);
             connection.setAutoCommit(false);
+
             T result = action.get();
+
             connection.commit();
             connection.setAutoCommit(true);
             return result;

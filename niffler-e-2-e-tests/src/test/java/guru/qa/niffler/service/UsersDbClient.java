@@ -27,7 +27,9 @@ public class UsersDbClient {
     private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoSpringJdbc();
     private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
 
-    private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(CFG.authJdbcUrl(), CFG.userdataJdbcUrl());
+    private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+            CFG.authJdbcUrl(),
+            CFG.userdataJdbcUrl());
 
 
     @SuppressWarnings("unchecked")
