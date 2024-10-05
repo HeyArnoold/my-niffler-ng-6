@@ -15,10 +15,11 @@ import java.util.Date;
 @Disabled
 public class JdbcTest {
 
+    UsersDbClient usersDbClient = new UsersDbClient();
+
     @Test
     void txTest() {
         SpendDbClient spendDbClient = new SpendDbClient();
-
         SpendJson spend = spendDbClient.createSpend(
                 new SpendJson(
                         null,
@@ -41,7 +42,6 @@ public class JdbcTest {
 
     @Test
     void springJdbcTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
         UserJson user = usersDbClient.createUser(
                 new UserJson(
                         null,
@@ -67,9 +67,7 @@ public class JdbcTest {
     @Test
     @Description("откатывает транзакции в обе базы")
     void chainedSpringTransactionTest() {
-        UsersDbClient userDbClient = new UsersDbClient();
-
-        UserJson user = userDbClient.createUserSpringChainedXaTransaction(
+        UserJson user = usersDbClient.createUserSpringChainedXaTransaction(
                 new UserJson(
                         null,
                         "createByXA",
@@ -89,9 +87,7 @@ public class JdbcTest {
     @Test
     @Description("Не откатывает транзакцию в базе auth")
     void chainedJdbcTransactionTest() {
-        UsersDbClient userDbClient = new UsersDbClient();
-
-        UserJson user = userDbClient.createUserJdbcChainedXaTransaction(
+        UserJson user = usersDbClient.createUserJdbcChainedXaTransaction(
                 new UserJson(
                         null,
                         "createByXA",
@@ -111,7 +107,6 @@ public class JdbcTest {
     @Test
     @Description("Пишет в auth, не пишет в userdata")
     void createUserSpringWithoutTxTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
         UserJson user = usersDbClient.createUserSpringWithoutTx(
                 new UserJson(
                         null,
@@ -131,7 +126,6 @@ public class JdbcTest {
     @Test
     @Description("Пишет в auth, не пишет в userdata")
     void createUserJdbcWithoutTxTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
         UserJson user = usersDbClient.createUserJdbcWithoutTx(
                 new UserJson(
                         null,
