@@ -6,19 +6,20 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UsersDbClient;
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Disabled
 public class JdbcTest {
 
+    UsersDbClient usersDbClient = new UsersDbClient();
+
     @Test
     void txTest() {
         SpendDbClient spendDbClient = new SpendDbClient();
-
         SpendJson spend = spendDbClient.createSpend(
                 new SpendJson(
                         null,
@@ -40,29 +41,7 @@ public class JdbcTest {
     }
 
     @Test
-    void xaTest() {
-        UsersDbClient userDbClient = new UsersDbClient();
-
-        UserJson user = userDbClient.createUser(
-                new UserJson(
-                        null,
-                        "createByXA",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                )
-        );
-
-        System.out.println(user);
-    }
-
-    @Test
     void springJdbcTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
         UserJson user = usersDbClient.createUser(
                 new UserJson(
                         null,
@@ -74,7 +53,7 @@ public class JdbcTest {
                         null,
                         null,
                         null
-                )
+                ), "12345"
         );
         System.out.println(user);
     }
@@ -82,9 +61,15 @@ public class JdbcTest {
     @Test
     void deleteUserTest() {
         UsersDbClient usersDbClient = new UsersDbClient();
-        usersDbClient.deleteUser(
+        usersDbClient.deleteUser("createByXA");
+    }
+
+    @Test
+    @Description("откатывает транзакции в обе базы")
+    void chainedSpringTransactionTest() {
+        UserJson user = usersDbClient.createUserSpringChainedXaTransaction(
                 new UserJson(
-                        UUID.fromString("63ed31c2-7e55-11ef-bcbb-0242ac110002"),
+                        null,
                         "createByXA",
                         null,
                         null,
@@ -93,6 +78,67 @@ public class JdbcTest {
                         null,
                         null,
                         null
-                ));
+                ), "12345"
+        );
+
+        System.out.println(user);
+    }
+
+    @Test
+    @Description("Не откатывает транзакцию в базе auth")
+    void chainedJdbcTransactionTest() {
+        UserJson user = usersDbClient.createUserJdbcChainedXaTransaction(
+                new UserJson(
+                        null,
+                        "createByXA",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null,
+                        null
+                ), "12345"
+        );
+
+        System.out.println(user);
+    }
+
+    @Test
+    @Description("Пишет в auth, не пишет в userdata")
+    void createUserSpringWithoutTxTest() {
+        UserJson user = usersDbClient.createUserSpringWithoutTx(
+                new UserJson(
+                        null,
+                        "createByXA",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null,
+                        null
+                ), "12345"
+        );
+        System.out.println(user);
+    }
+
+    @Test
+    @Description("Пишет в auth, не пишет в userdata")
+    void createUserJdbcWithoutTxTest() {
+        UserJson user = usersDbClient.createUserJdbcWithoutTx(
+                new UserJson(
+                        null,
+                        "createByXA",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null,
+                        null
+                ), "12345"
+        );
+        System.out.println(user);
     }
 }

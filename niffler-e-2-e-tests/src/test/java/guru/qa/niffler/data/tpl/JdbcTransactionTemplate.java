@@ -53,4 +53,36 @@ public class JdbcTransactionTemplate {
     public <T> T execute(Supplier<T> action) {
         return execute(action, TRANSACTION_READ_COMMITTED);
     }
+
+    public void execute(Runnable action, int isolationLvl) {
+        Connection connection = null;
+        try {
+            connection = holder.connection();
+            connection.setTransactionIsolation(isolationLvl);
+            connection.setAutoCommit(false);
+
+            action.run();
+
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (Exception e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if (closeAfterAction.get()) {
+                holder.close();
+            }
+        }
+    }
+
+    public void execute(Runnable action) {
+        execute(action, TRANSACTION_READ_COMMITTED);
+    }
 }
