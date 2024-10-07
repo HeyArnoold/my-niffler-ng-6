@@ -60,6 +60,23 @@ public class JdbcTest {
     @Test
     void deleteUserTest() {
         UsersDbClient usersDbClient = new UsersDbClient();
-        usersDbClient.deleteUser("createByXA");
+        usersDbClient.deleteUser("");
+    }
+
+    @Test
+    void addFriendsTest() {
+
+        UserJson myself = usersDbClient.createUserByRepo("myself", "12345");
+
+        UserJson friend = usersDbClient.createUserByRepo("friend", "12345");
+
+        UserJson income = usersDbClient.createUserByRepo("income", "12345");
+
+        UserJson outcome = usersDbClient.createUserByRepo("outcome", "12345");
+
+
+        usersDbClient.addIncomeInvitation(myself, income);
+        usersDbClient.addOutcomeInvitation(myself, outcome);
+        usersDbClient.addFriends(myself, friend);
     }
 }

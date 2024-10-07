@@ -9,8 +9,7 @@ public interface UdUserRepository {
 
     UdUserEntity create(UdUserEntity user);
     Optional<UdUserEntity> findById(UUID id);
-    void addIncomeInvitation(UdUserEntity requester, UdUserEntity addressee);
-    void addOutcomeInvitation(UdUserEntity requester, UdUserEntity addressee);
+    void addInvitation(UdUserEntity requester, UdUserEntity addressee);
     void addFriend(UdUserEntity requester, UdUserEntity addressee);
 
 }
