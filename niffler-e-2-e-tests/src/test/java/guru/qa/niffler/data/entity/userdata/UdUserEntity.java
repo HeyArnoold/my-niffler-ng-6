@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "\"user\"")
 public class UdUserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

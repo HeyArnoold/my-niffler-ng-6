@@ -14,45 +14,54 @@ import java.util.Date;
 
 public class JdbcTest {
 
-  @Test
-  void txTest() {
-    SpendDbClient spendDbClient = new SpendDbClient();
+    private static final UsersDbClient usersDbClient = new UsersDbClient();
 
-    SpendJson spend = spendDbClient.createSpend(
-        new SpendJson(
-            null,
-            new Date(),
-            new CategoryJson(
-                null,
-                "cat-name-tx-3",
-                "duck",
-                false
-            ),
-            CurrencyValues.RUB,
-            1000.0,
-            "spend-name-tx-3",
-            "duck"
-        )
-    );
+    @Test
+    void txTest() {
+        SpendDbClient spendDbClient = new SpendDbClient();
 
-    System.out.println(spend);
-  }
+        SpendJson spend = spendDbClient.createSpend(
+                new SpendJson(
+                        null,
+                        new Date(),
+                        new CategoryJson(
+                                null,
+                                "cat-name-tx-3",
+                                "duck",
+                                false
+                        ),
+                        CurrencyValues.RUB,
+                        1000.0,
+                        "spend-name-tx-3",
+                        "duck"
+                )
+        );
+
+        System.out.println(spend);
+    }
 
 
-  static UsersDbClient usersDbClient = new UsersDbClient();
+    @ValueSource(strings = {
+            "valentin-10"
+    })
+    @ParameterizedTest
+    void hibernateTest(String uname) {
 
-  @ValueSource(strings = {
-      "valentin-10"
-  })
-  @ParameterizedTest
-  void springJdbcTest(String uname) {
+        UserJson user = usersDbClient.createUser(
+                uname,
+                "12345"
+        );
 
-    UserJson user = usersDbClient.createUser(
-        uname,
-        "12345"
-    );
+        usersDbClient.addIncomeInvitation(user, 1);
+        usersDbClient.addOutcomeInvitation(user, 1);
+    }
 
-    usersDbClient.addIncomeInvitation(user, 1);
-    usersDbClient.addOutcomeInvitation(user, 1);
-  }
+    @ValueSource(strings = {
+            "solomon.wilkinson"
+    })
+    @ParameterizedTest
+    void deleteTest(String uname) {
+
+        usersDbClient.deleteUser(uname);
+    }
 }

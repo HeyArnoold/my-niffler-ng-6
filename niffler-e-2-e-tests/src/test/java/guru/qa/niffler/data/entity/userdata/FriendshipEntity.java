@@ -12,7 +12,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "friendship")
+@Table(name = "\"friendship\"")
 @IdClass(FriendShipId.class)
 public class FriendshipEntity implements Serializable {
 
