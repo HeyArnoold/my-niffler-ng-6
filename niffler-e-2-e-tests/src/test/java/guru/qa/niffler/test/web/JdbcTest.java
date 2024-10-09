@@ -6,77 +6,53 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UsersDbClient;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Date;
 
-@Disabled
 public class JdbcTest {
 
-    UsersDbClient usersDbClient = new UsersDbClient();
+  @Test
+  void txTest() {
+    SpendDbClient spendDbClient = new SpendDbClient();
 
-    @Test
-    void txTest() {
-        SpendDbClient spendDbClient = new SpendDbClient();
-        SpendJson spend = spendDbClient.createSpend(
-                new SpendJson(
-                        null,
-                        new Date(),
-                        new CategoryJson(
-                                null,
-                                "cat-name-tx-2",
-                                "duck",
-                                false
-                        ),
-                        CurrencyValues.RUB,
-                        1000.0,
-                        "spend-name-tx",
-                        null
-                )
-        );
+    SpendJson spend = spendDbClient.createSpend(
+        new SpendJson(
+            null,
+            new Date(),
+            new CategoryJson(
+                null,
+                "cat-name-tx-3",
+                "duck",
+                false
+            ),
+            CurrencyValues.RUB,
+            1000.0,
+            "spend-name-tx-3",
+            "duck"
+        )
+    );
 
-        System.out.println(spend);
-    }
-
-    @Test
-    void springJdbcTest() {
-        UserJson user = usersDbClient.createUser(
-                new UserJson(
-                        null,
-                        "valentin-5",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                ), "12345"
-        );
-        System.out.println(user);
-    }
-
-    @Test
-    void deleteUserTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
-        usersDbClient.deleteUser("");
-    }
-
-    @Test
-    void addFriendsTest() {
-
-        UserJson myself = usersDbClient.createUserByRepo("myself", "12345");
-
-        UserJson friend = usersDbClient.createUserByRepo("friend", "12345");
-
-        UserJson income = usersDbClient.createUserByRepo("income", "12345");
-
-        UserJson outcome = usersDbClient.createUserByRepo("outcome", "12345");
+    System.out.println(spend);
+  }
 
 
-        usersDbClient.addIncomeInvitation(myself, income);
-        usersDbClient.addOutcomeInvitation(myself, outcome);
-        usersDbClient.addFriends(myself, friend);
-    }
+  static UsersDbClient usersDbClient = new UsersDbClient();
+
+  @ValueSource(strings = {
+      "valentin-10"
+  })
+  @ParameterizedTest
+  void springJdbcTest(String uname) {
+
+    UserJson user = usersDbClient.createUser(
+        uname,
+        "12345"
+    );
+
+    usersDbClient.addIncomeInvitation(user, 1);
+    usersDbClient.addOutcomeInvitation(user, 1);
+  }
 }
