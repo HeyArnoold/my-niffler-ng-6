@@ -6,7 +6,6 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UsersDbClient;
-import io.qameta.allure.Description;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -61,84 +60,23 @@ public class JdbcTest {
     @Test
     void deleteUserTest() {
         UsersDbClient usersDbClient = new UsersDbClient();
-        usersDbClient.deleteUser("createByXA");
+        usersDbClient.deleteUser("");
     }
 
     @Test
-    @Description("откатывает транзакции в обе базы")
-    void chainedSpringTransactionTest() {
-        UserJson user = usersDbClient.createUserSpringChainedXaTransaction(
-                new UserJson(
-                        null,
-                        "createByXA",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                ), "12345"
-        );
+    void addFriendsTest() {
 
-        System.out.println(user);
-    }
+        UserJson myself = usersDbClient.createUserByRepo("myself", "12345");
 
-    @Test
-    @Description("Не откатывает транзакцию в базе auth")
-    void chainedJdbcTransactionTest() {
-        UserJson user = usersDbClient.createUserJdbcChainedXaTransaction(
-                new UserJson(
-                        null,
-                        "createByXA",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                ), "12345"
-        );
+        UserJson friend = usersDbClient.createUserByRepo("friend", "12345");
 
-        System.out.println(user);
-    }
+        UserJson income = usersDbClient.createUserByRepo("income", "12345");
 
-    @Test
-    @Description("Пишет в auth, не пишет в userdata")
-    void createUserSpringWithoutTxTest() {
-        UserJson user = usersDbClient.createUserSpringWithoutTx(
-                new UserJson(
-                        null,
-                        "createByXA",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                ), "12345"
-        );
-        System.out.println(user);
-    }
+        UserJson outcome = usersDbClient.createUserByRepo("outcome", "12345");
 
-    @Test
-    @Description("Пишет в auth, не пишет в userdata")
-    void createUserJdbcWithoutTxTest() {
-        UserJson user = usersDbClient.createUserJdbcWithoutTx(
-                new UserJson(
-                        null,
-                        "createByXA",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                ), "12345"
-        );
-        System.out.println(user);
+
+        usersDbClient.addIncomeInvitation(myself, income);
+        usersDbClient.addOutcomeInvitation(myself, outcome);
+        usersDbClient.addFriends(myself, friend);
     }
 }
