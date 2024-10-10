@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.repository.impl;
+package guru.qa.niffler.data.repository.impl.hibernate;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -33,14 +33,27 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
 
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
+        String queryStr = "select u from AuthUserEntity u where u.username =: username";
         try {
             return Optional.of(
-                    entityManager.createQuery("select u from AuthUserEntity u where u.username =: username", AuthUserEntity.class)
+                    entityManager.createQuery(queryStr, AuthUserEntity.class)
                             .setParameter("username", username)
                             .getSingleResult()
             );
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void remove(AuthUserEntity user) {
+        entityManager.joinTransaction();
+        entityManager.remove(user);
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        entityManager.joinTransaction();
+        return entityManager.merge(user);
     }
 }

@@ -13,8 +13,8 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
-import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.hibernate.AuthUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.hibernate.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
@@ -77,7 +77,7 @@ public class UsersDbClient {
                             AuthUserEntity authUser = authUserEntity(username, "12345");
                             authUserRepository.create(authUser);
                             UdUserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.addIncomeInvitation(targetEntity, adressee);
+                            userdataUserRepository.sendInvitation(targetEntity, adressee);
                             return null;
                         }
                 );
@@ -97,7 +97,7 @@ public class UsersDbClient {
                             AuthUserEntity authUser = authUserEntity(username, "12345");
                             authUserRepository.create(authUser);
                             UdUserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.addOutcomeInvitation(targetEntity, adressee);
+                            userdataUserRepository.sendInvitation(targetEntity, adressee);
                             return null;
                         }
                 );
@@ -111,7 +111,7 @@ public class UsersDbClient {
 
     public void deleteUser(String username) {
         xaTransactionTemplate.execute(() -> {
-            authUserDaoSpring.findByUsername(username)
+            authUserRepository.findByUsername(username)
                     .ifPresent(
                             authUser -> {
                                 authAuthorityDaoSpring.delete(authUser);

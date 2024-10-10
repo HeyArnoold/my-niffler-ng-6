@@ -11,7 +11,9 @@ public interface AuthUserRepository {
 
     Optional<AuthUserEntity> findById(UUID id);
 
-  Optional<AuthUserEntity> findByUsername(String username);
+    Optional<AuthUserEntity> findByUsername(String username);
 
+    void remove(AuthUserEntity user);
 
+    AuthUserEntity update(AuthUserEntity user);
 }
