@@ -98,7 +98,22 @@ public class UdUserRepositoryJdbc implements UserdataUserRepository {
 
     @Override
     public void remove(UdUserEntity user) {
-        //todo возможно нужно еще удалять запросы в друзья от удаленного пользователя
+        // удаляем все данные из friendship
+        try (PreparedStatement requesterPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+                "DELETE FROM public.friendship WHERE requester_id = ?");
+             PreparedStatement addresseePs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+                     "DELETE FROM public.friendship WHERE addressee_id = ?")
+        ) {
+            requesterPs.setObject(1, user.getId());
+            requesterPs.executeUpdate();
+
+            addresseePs.setObject(1, user.getId());
+            addresseePs.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        // удаляем все данные из user
         udUserDao.delete(user);
     }
 }

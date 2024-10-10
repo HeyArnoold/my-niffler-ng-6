@@ -101,7 +101,12 @@ public class UdUserRepositorySpringJdbc implements UserdataUserRepository {
 
     @Override
     public void remove(UdUserEntity user) {
-        //todo возможно нужно еще удалять запросы в друзья от удаленного пользователя
+        // удаляем все данные из friendship
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
+        jdbcTemplate.update("DELETE FROM public.friendship WHERE requester_id = ?", user.getId());
+        jdbcTemplate.update("DELETE FROM public.friendship WHERE addressee_id = ?", user.getId());
+
+        // удаляем все данные из user
         udUserDao.delete(user);
     }
 }
