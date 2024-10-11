@@ -13,7 +13,7 @@ import guru.qa.niffler.model.SpendJson;
 
 import java.util.Optional;
 
-public class SpendDbClient {
+public class SpendDbClient implements SpendClient {
 
     private static final Config CFG = Config.getInstance();
 

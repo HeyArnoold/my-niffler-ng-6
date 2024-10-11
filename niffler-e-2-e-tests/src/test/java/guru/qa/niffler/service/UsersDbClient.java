@@ -1,12 +1,6 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.AuthAuthorityDao;
-import guru.qa.niffler.data.dao.AuthUserDao;
-import guru.qa.niffler.data.dao.UdUserDao;
-import guru.qa.niffler.data.dao.impl.springJdbc.AuthAuthorityDaoSpringJdbc;
-import guru.qa.niffler.data.dao.impl.springJdbc.AuthUserDaoSpringJdbc;
-import guru.qa.niffler.data.dao.impl.springJdbc.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
@@ -15,14 +9,11 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.hibernate.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.hibernate.UserdataUserRepositoryHibernate;
-import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
-import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 
@@ -30,23 +21,13 @@ import static guru.qa.niffler.utils.RandomDataUtils.genRandomUsername;
 
 
 @SuppressWarnings("unchecked")
-public class UsersDbClient {
+public class UsersDbClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
     private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
-
-    private final AuthUserDao authUserDaoSpring = new AuthUserDaoSpringJdbc();
-    private final AuthAuthorityDao authAuthorityDaoSpring = new AuthAuthorityDaoSpringJdbc();
-    private final UdUserDao udUserDaoSpring = new UdUserDaoSpringJdbc();
-
-    private final TransactionTemplate txTemplate = new TransactionTemplate(
-            new JdbcTransactionManager(
-                    DataSources.dataSource(CFG.authJdbcUrl())
-            )
-    );
 
     private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),
@@ -65,7 +46,8 @@ public class UsersDbClient {
         );
     }
 
-    public void addIncomeInvitation(UserJson targetUser, int count) {
+    @Override
+    public void createIncomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
             UdUserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()
@@ -85,7 +67,8 @@ public class UsersDbClient {
         }
     }
 
-    public void addOutcomeInvitation(UserJson targetUser, int count) {
+    @Override
+    public void createOutcomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
             UdUserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()
@@ -105,22 +88,39 @@ public class UsersDbClient {
         }
     }
 
-    void addFriend(UserJson targetUser, int count) {
+    @Override
+    public void createFriends(UserJson targetUser, int count) {
+        if (count > 0) {
+            UdUserEntity targetEntity = userdataUserRepository.findById(
+                    targetUser.id()
+            ).orElseThrow();
 
+            for (int i = 0; i < count; i++) {
+                xaTransactionTemplate.execute(() -> {
+                            String username = genRandomUsername();
+                            userdataUserRepository.addFriend(targetEntity, createNewUser(username, "12345"));
+                        }
+                );
+            }
+        }
     }
 
+    @Override
     public void deleteUser(String username) {
         xaTransactionTemplate.execute(() -> {
             authUserRepository.findByUsername(username)
                     .ifPresent(
-                            authUser -> {
-                                authAuthorityDaoSpring.delete(authUser);
-                                authUserDaoSpring.delete(authUser);
-                            }
+                            authUserRepository::remove
                     );
-            udUserDaoSpring.findByUsername(username)
-                    .ifPresent(udUserDaoSpring::delete);
+            userdataUserRepository.findByUsername(username)
+                    .ifPresent(userdataUserRepository::remove);
         });
+    }
+
+    private UdUserEntity createNewUser(String username, String password) {
+        AuthUserEntity authUser = authUserEntity(username, password);
+        authUserRepository.create(authUser);
+        return userdataUserRepository.create(userEntity(username));
     }
 
     private UdUserEntity userEntity(String username) {
