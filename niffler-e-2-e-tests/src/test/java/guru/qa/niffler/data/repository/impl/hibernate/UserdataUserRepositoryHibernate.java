@@ -48,6 +48,7 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
 
     @Override
     public UdUserEntity update(UdUserEntity user) {
+        //todo Должны ли мы здесь ограничивать изменение бизнес-ключей по аналогии как мы сделали в jdbc и springJdbc репозиториях? Например через createQuery
         entityManager.joinTransaction();
         return entityManager.merge(user);
     }
