@@ -52,8 +52,8 @@ public class JdbcTest {
                 "12345"
         );
 
-        usersDbClient.addIncomeInvitation(user, 1);
-        usersDbClient.addOutcomeInvitation(user, 1);
+        usersDbClient.createIncomeInvitations(user, 1);
+        usersDbClient.createFriends(user, 1);
     }
 
     @ValueSource(strings = {

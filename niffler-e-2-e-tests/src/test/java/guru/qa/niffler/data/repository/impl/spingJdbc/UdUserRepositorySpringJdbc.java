@@ -8,17 +8,16 @@ import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.PreparedStatement;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.ACCEPTED;
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.PENDING;
 
-@SuppressWarnings("resource")
 public class UdUserRepositorySpringJdbc implements UserdataUserRepository {
 
     private static final Config CFG = Config.getInstance();
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
 
     private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
 
@@ -39,70 +38,49 @@ public class UdUserRepositorySpringJdbc implements UserdataUserRepository {
 
     @Override
     public UdUserEntity update(UdUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
-        jdbcTemplate.update(con -> {
-            PreparedStatement usersPs = con.prepareStatement(
-                    "UPDATE public.user " +
-                            "SET currency = ?, firstname = ?, surname = ?, photo = ?, photo_small = ?, full_name = ?" +
-                            "WHERE id = ?"
-            );
+        String sql = "UPDATE public.user SET currency = ?, firstname = ?, surname = ?, photo = ?, photo_small = ?, full_name = ? WHERE id = ?";
 
-            usersPs.setString(1, user.getCurrency().name());
-            usersPs.setString(2, user.getFirstname());
-            usersPs.setString(3, user.getSurname());
-            usersPs.setBytes(4, user.getPhoto());
-            usersPs.setBytes(5, user.getPhotoSmall());
-            usersPs.setString(6, user.getFullname());
-            return usersPs;
-        });
+        jdbcTemplate.update(sql,
+                user.getCurrency().name(),
+                user.getFirstname(),
+                user.getSurname(),
+                user.getPhoto(),
+                user.getPhotoSmall(),
+                user.getFullname()
+        );
         return user;
     }
 
     @Override
     public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
-        jdbcTemplate.update(con -> {
-            PreparedStatement friendshipPs = con.prepareStatement(
-                    "INSERT INTO public.friendship (requester_id, addressee_id, status) VALUES (?,?,?)");
-
-            friendshipPs.setObject(1, requester.getId());
-            friendshipPs.setObject(2, addressee.getId());
-            friendshipPs.setString(3, PENDING.name());
-            return friendshipPs;
-        });
+        jdbcTemplate.update("INSERT INTO public.friendship (requester_id, addressee_id, status) VALUES (?,?,?)",
+                requester.getId(),
+                addressee.getId(),
+                PENDING.name()
+        );
         requester.addFriends(PENDING, addressee);
     }
 
     @Override
-    public void addFriend(UdUserEntity requester, UdUserEntity addressee) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
-        jdbcTemplate.update(con -> {
-            PreparedStatement requesterPs = con.prepareStatement(
-                    "INSERT INTO public.friendship (requester_id, addressee_id, status) VALUES (?,?,?)");
+    public void addFriend(UdUserEntity user1, UdUserEntity user2) {
+        jdbcTemplate.update("INSERT INTO public.friendship (requester_id, addressee_id, status) VALUES (?,?,?)",
+                user1.getId(),
+                user2.getId(),
+                ACCEPTED.name()
+        );
 
-            requesterPs.setObject(1, requester.getId());
-            requesterPs.setObject(2, addressee.getId());
-            requesterPs.setString(3, ACCEPTED.name());
-            return requesterPs;
-        });
-
-        jdbcTemplate.update(con -> {
-            PreparedStatement addresseePs = con.prepareStatement(
-                    "INSERT INTO public.friendship (requester_id, addressee_id, status) VALUES (?,?,?)");
-
-            addresseePs.setObject(1, addressee.getId());
-            addresseePs.setObject(2, requester.getId());
-            addresseePs.setString(3, ACCEPTED.name());
-            return addresseePs;
-        });
-        requester.addFriends(ACCEPTED, addressee);
-        addressee.addFriends(ACCEPTED, requester);
+        jdbcTemplate.update("INSERT INTO public.friendship (requester_id, addressee_id, status) VALUES (?,?,?)",
+                user2.getId(),
+                user1.getId(),
+                ACCEPTED.name()
+        );
+        user1.addFriends(ACCEPTED, user2);
+        user2.addFriends(ACCEPTED, user1);
     }
 
     @Override
     public void remove(UdUserEntity user) {
         // удаляем все данные из friendship
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         jdbcTemplate.update("DELETE FROM public.friendship WHERE requester_id = ?", user.getId());
         jdbcTemplate.update("DELETE FROM public.friendship WHERE addressee_id = ?", user.getId());
 

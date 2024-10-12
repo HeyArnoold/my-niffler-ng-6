@@ -21,7 +21,8 @@ public class XaTransactionTemplate {
         return this;
     }
 
-    public <T> T execute(Supplier<T>... actions) {
+    @SafeVarargs
+    public final <T> T execute(Supplier<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();

@@ -8,7 +8,7 @@ import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.hibernate.AuthUserRepositoryHibernate;
-import guru.qa.niffler.data.repository.impl.hibernate.UserdataUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.hibernate.UdRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
@@ -20,14 +20,13 @@ import java.util.Arrays;
 import static guru.qa.niffler.utils.RandomDataUtils.genRandomUsername;
 
 
-@SuppressWarnings("unchecked")
 public class UsersDbClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
-    private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
+    private final UserdataUserRepository userdataUserRepository = new UdRepositoryHibernate();
 
     private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),
@@ -68,6 +67,14 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
+    public void createIncomeInvitations(UserJson userFrom, UserJson user) {
+        UdUserEntity userEntity = userdataUserRepository.findById(user.id()).orElseThrow();
+        UdUserEntity userFromEntity = userdataUserRepository.findById(userFrom.id()).orElseThrow();
+
+        xaTransactionTemplate.execute(() -> userdataUserRepository.sendInvitation(userFromEntity, userEntity));
+    }
+
+    @Override
     public void createOutcomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
             UdUserEntity targetEntity = userdataUserRepository.findById(
@@ -89,6 +96,14 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
+    public void createOutcomeInvitations(UserJson user, UserJson targetUser) {
+        UdUserEntity userEntity = userdataUserRepository.findById(user.id()).orElseThrow();
+        UdUserEntity targetUserEntity = userdataUserRepository.findById(targetUser.id()).orElseThrow();
+
+        xaTransactionTemplate.execute(() -> userdataUserRepository.sendInvitation(userEntity, targetUserEntity));
+    }
+
+    @Override
     public void createFriends(UserJson targetUser, int count) {
         if (count > 0) {
             UdUserEntity targetEntity = userdataUserRepository.findById(
@@ -103,6 +118,14 @@ public class UsersDbClient implements UsersClient {
                 );
             }
         }
+    }
+
+    @Override
+    public void createFriends(UserJson user1, UserJson user2) {
+        UdUserEntity userEntity1 = userdataUserRepository.findById(user1.id()).orElseThrow();
+        UdUserEntity userEntity2 = userdataUserRepository.findById(user2.id()).orElseThrow();
+
+        xaTransactionTemplate.execute(() -> userdataUserRepository.addFriend(userEntity1, userEntity2));
     }
 
     @Override

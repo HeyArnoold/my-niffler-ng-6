@@ -25,11 +25,17 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return spend;
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Override
     public SpendEntity updateSpend(SpendEntity spend) {
-        //todo Должны ли мы здесь ограничивать изменение бизнес-ключей по аналогии как мы сделали в jdbc и springJdbc репозиториях? Например через createQuery
+        SpendEntity toBeUpdated = findSpendById(spend.getId()).get();
         entityManager.joinTransaction();
-        return entityManager.merge(spend);
+        toBeUpdated.setSpendDate(spend.getSpendDate());
+        toBeUpdated.setCurrency(spend.getCurrency());
+        toBeUpdated.setAmount(spend.getAmount());
+        toBeUpdated.setDescription(spend.getDescription());
+        toBeUpdated.setCategory(findOrCreateCategory(spend));
+        return entityManager.merge(toBeUpdated);
     }
 
     @Override
@@ -93,5 +99,10 @@ public class SpendRepositoryHibernate implements SpendRepository {
     public void removeCategory(CategoryEntity category) {
         entityManager.joinTransaction();
         entityManager.remove(category);
+    }
+
+    private CategoryEntity findOrCreateCategory(SpendEntity spend) {
+        Optional<CategoryEntity> existCategory = findCategoryByUsernameAndName(spend.getUsername(), spend.getCategory().getName());
+        return existCategory.orElseGet(() -> createCategory(spend.getCategory()));
     }
 }

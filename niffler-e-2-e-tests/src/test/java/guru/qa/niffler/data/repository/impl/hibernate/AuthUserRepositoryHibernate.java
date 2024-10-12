@@ -51,10 +51,16 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         entityManager.remove(user);
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
-        //todo Должны ли мы здесь ограничивать изменение бизнес-ключей по аналогии как мы сделали в jdbc и springJdbc репозиториях? Например через createQuery
+        AuthUserEntity toBeUpdated = findById(user.getId()).get();
         entityManager.joinTransaction();
+        toBeUpdated.setPassword(user.getPassword());
+        toBeUpdated.setEnabled(user.getEnabled());
+        toBeUpdated.setAccountNonExpired(user.getAccountNonExpired());
+        toBeUpdated.setAccountNonLocked(user.getAccountNonLocked());
+        toBeUpdated.setCredentialsNonExpired(user.getCredentialsNonExpired());
         return entityManager.merge(user);
     }
 }

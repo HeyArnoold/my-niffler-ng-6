@@ -75,20 +75,20 @@ public class UdUserRepositoryJdbc implements UserdataUserRepository {
     }
 
     @Override
-    public void addFriend(UdUserEntity requester, UdUserEntity addressee) {
+    public void addFriend(UdUserEntity user1, UdUserEntity user2) {
         try (PreparedStatement requesterPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO public.friendship (requester_id, addressee_id, status) " +
                         "VALUES (?,?,?)");
              PreparedStatement addresseePs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                      "INSERT INTO public.friendship (requester_id, addressee_id, status) VALUES (?,?,?)")) {
 
-            requesterPs.setObject(1, requester.getId());
-            requesterPs.setObject(2, addressee.getId());
+            requesterPs.setObject(1, user1.getId());
+            requesterPs.setObject(2, user2.getId());
             requesterPs.setString(3, ACCEPTED.name());
             requesterPs.executeUpdate();
 
-            addresseePs.setObject(1, addressee.getId());
-            addresseePs.setObject(2, requester.getId());
+            addresseePs.setObject(1, user2.getId());
+            addresseePs.setObject(2, user1.getId());
             addresseePs.setString(3, ACCEPTED.name());
             addresseePs.executeUpdate();
         } catch (SQLException e) {
