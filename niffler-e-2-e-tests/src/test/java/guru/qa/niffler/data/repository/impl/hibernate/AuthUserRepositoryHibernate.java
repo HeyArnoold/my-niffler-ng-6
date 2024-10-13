@@ -61,6 +61,6 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         toBeUpdated.setAccountNonExpired(user.getAccountNonExpired());
         toBeUpdated.setAccountNonLocked(user.getAccountNonLocked());
         toBeUpdated.setCredentialsNonExpired(user.getCredentialsNonExpired());
-        return entityManager.merge(user);
+        return entityManager.merge(toBeUpdated);
     }
 }
