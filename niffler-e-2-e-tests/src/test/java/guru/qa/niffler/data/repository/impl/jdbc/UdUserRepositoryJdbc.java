@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.ACCEPTED;
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.PENDING;
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 @SuppressWarnings("resource")
 public class UdUserRepositoryJdbc implements UserdataUserRepository {

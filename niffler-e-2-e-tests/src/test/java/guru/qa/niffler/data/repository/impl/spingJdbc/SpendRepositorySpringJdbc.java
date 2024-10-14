@@ -7,9 +7,9 @@ import guru.qa.niffler.data.dao.impl.springJdbc.CategoryDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.springJdbc.SpendDaoSpringJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
+import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import guru.qa.niffler.data.repository.SpendRepository;
-import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Date;

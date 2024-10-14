@@ -4,8 +4,8 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.dao.impl.springJdbc.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
+import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Optional;
