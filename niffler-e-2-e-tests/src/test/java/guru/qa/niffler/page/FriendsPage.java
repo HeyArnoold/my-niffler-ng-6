@@ -3,8 +3,12 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.Keys;
 
-import static com.codeborne.selenide.Condition.*;
+import java.util.List;
+
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class FriendsPage {
@@ -13,12 +17,21 @@ public class FriendsPage {
     private final ElementsCollection allPeopleList = $$("tbody#all tr");
 
     private final SelenideElement allPeopleButton = $("[aria-label='People tabs'] [href='/people/all']");
+    private final SelenideElement searchField = $("input[type='text']");
     private final SelenideElement emptyFriendListText = $x("//p[text()='There are no users yet']");
     private final SelenideElement myFriendsHeader = $x("//h2[text()='My friends']");
     private final SelenideElement friendRequestsHeader = $x("//h2[text()='Friend requests']");
 
     public FriendsPage checkNameInFriendList(String name) {
         friendList.findBy(text(name)).shouldBe(visible);
+        return this;
+    }
+
+    public FriendsPage checkNamesInFriendList(List<String> expectedUsernames) {
+        for (String expectedUsername : expectedUsernames) {
+            searchFriend(expectedUsername);
+            friendList.find(text(expectedUsername)).should(visible);
+        }
         return this;
     }
 
@@ -67,6 +80,12 @@ public class FriendsPage {
 
     public FriendsPage clickAllPeople() {
         allPeopleButton.click();
+        return this;
+    }
+
+    public FriendsPage searchFriend(String username) {
+        searchField.sendKeys(username);
+        searchField.sendKeys(Keys.ENTER);
         return this;
     }
 }
