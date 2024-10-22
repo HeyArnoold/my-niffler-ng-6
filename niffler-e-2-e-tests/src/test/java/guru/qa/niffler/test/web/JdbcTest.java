@@ -59,7 +59,7 @@ public class JdbcTest {
     }
 
     @ValueSource(strings = {
-            "solomon.wilkinson"
+            "avril.green"
     })
     @ParameterizedTest
     void deleteTest(String uname) {

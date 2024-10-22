@@ -1,13 +1,11 @@
 package guru.qa.niffler.data.repository.impl.hibernate;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,34 +64,12 @@ public class UdRepositoryHibernate implements UserdataUserRepository {
     @Override
     public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
         entityManager.joinTransaction();
-        FriendshipEntity friendship = new FriendshipEntity();
-        friendship.setRequester(requester);
-        friendship.setAddressee(addressee);
-        friendship.setStatus(PENDING);
-        friendship.setCreatedDate(new Date());
-        entityManager.persist(friendship);
         requester.addFriends(PENDING, addressee);
     }
 
     @Override
     public void addFriend(UdUserEntity user1, UdUserEntity user2) {
         entityManager.joinTransaction();
-        Date date = new Date();
-        FriendshipEntity requesterFriendship = new FriendshipEntity();
-        requesterFriendship.setRequester(user1);
-        requesterFriendship.setAddressee(user2);
-        requesterFriendship.setStatus(ACCEPTED);
-        requesterFriendship.setCreatedDate(date);
-
-        FriendshipEntity addresseeFriendship = new FriendshipEntity();
-        addresseeFriendship.setRequester(user2);
-        addresseeFriendship.setAddressee(user1);
-        addresseeFriendship.setStatus(ACCEPTED);
-        addresseeFriendship.setCreatedDate(date);
-
-        entityManager.persist(requesterFriendship);
-        entityManager.persist(addresseeFriendship);
-
         user1.addFriends(ACCEPTED, user2);
         user2.addFriends(ACCEPTED, user1);
     }

@@ -2,36 +2,37 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.*;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
-
-@ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
+@WebTest
 public class FriendsWebTest {
     private static final Config CFG = Config.getInstance();
 
+    @User(
+            addedFriends = 1
+    )
     @Test
-    void friendShouldBePresentInFriendsTable(@UserType(type = WITH_FRIEND) StaticUser user) {
+    void friendShouldBePresentInFriendsTable(UserJson user) {
         FriendsPage friendsPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password())
+                .login(user.username(), user.testData().password())
                 .goToFriends();
 
         friendsPage
-                .checkNameInFriendList(user.friend())
+                .checkNameInFriendList(user.testData().addedFriends().getFirst())
                 .myFriendsHeaderShouldBeVisible()
                 .friendRequestsHeaderShouldNotBeVisible();
     }
 
+    @User
     @Test
-    void friendsTableShouldBeEmptyForNewUser(@UserType(type = EMPTY) StaticUser user) {
+    void friendsTableShouldBeEmptyForNewUser(UserJson user) {
         FriendsPage friendsPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password()).goToFriends();
+                .login(user.username(), user.testData().password()).goToFriends();
 
         friendsPage
                 .friendListShouldBeEmpty()
@@ -39,26 +40,32 @@ public class FriendsWebTest {
                 .friendRequestsHeaderShouldNotBeVisible();
     }
 
+    @User(
+            incomeInvitations = 1
+    )
     @Test
-    void incomeInvitationBePresentInFriendsTable(@UserType(type = WITH_INCOME_REQUEST) StaticUser user) {
+    void incomeInvitationBePresentInFriendsTable(UserJson user) {
         FriendsPage friendsPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password()).goToFriends();
+                .login(user.username(), user.testData().password()).goToFriends();
 
         friendsPage
-                .checkNameInRequestList(user.income())
-                .myFriendsHeaderShouldBeVisible()
+                .checkNameInRequestList(user.testData().income().getFirst())
+                .myFriendsHeaderShouldNotBeVisible()
                 .friendRequestsHeaderShouldBeVisible();
     }
 
+    @User(
+            outcomeInvitations = 1
+    )
     @Test
-    void outcomeInvitationBePresentInAllPeoplesTable(@UserType(type = WITH_OUTCOME_REQUEST) StaticUser user) {
+    void outcomeInvitationBePresentInAllPeoplesTable(UserJson user) {
         FriendsPage friendsPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login(user.username(), user.password())
+                .login(user.username(), user.testData().password())
                 .goToFriends();
 
         friendsPage
                 .clickAllPeople()
-                .checkNameInAllPeopleList(user.outcome())
-                .checkOutcomeInvitationInAllPeopleList(user.outcome());
+                .checkNameInAllPeopleList(user.testData().outcome().getFirst())
+                .checkOutcomeInvitationInAllPeopleList(user.testData().outcome().getFirst());
     }
 }
