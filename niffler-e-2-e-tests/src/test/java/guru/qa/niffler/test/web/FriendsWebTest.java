@@ -50,7 +50,7 @@ public class FriendsWebTest {
 
         friendsPage
                 .checkNameInRequestList(user.testData().income().getFirst())
-                .myFriendsHeaderShouldBeVisible()
+                .myFriendsHeaderShouldNotBeVisible()
                 .friendRequestsHeaderShouldBeVisible();
     }
 

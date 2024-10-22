@@ -15,6 +15,7 @@ import guru.qa.niffler.model.UserJson;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 import static guru.qa.niffler.utils.RandomDataUtils.genRandomUsername;
@@ -72,14 +73,11 @@ public class UsersDbClient implements UsersClient {
             ).orElseThrow();
 
             for (int i = 0; i < count; i++) {
+                String username = genRandomUsername();
                 xaTransactionTemplate.execute(() -> {
-                            String username = genRandomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, "12345");
-                            authUserRepository.create(authUser);
-                            UdUserEntity adressee = userdataUserRepository.create(userEntity(username));
+                            UdUserEntity adressee = createNewUser(username, "12345");
                             userdataUserRepository.sendInvitation(adressee, targetEntity);
                             incomeUsers.add(UserJson.fromEntity(adressee, null));
-                            return null;
                         }
                 );
             }
@@ -104,14 +102,11 @@ public class UsersDbClient implements UsersClient {
             ).orElseThrow();
 
             for (int i = 0; i < count; i++) {
+                String username = genRandomUsername();
                 xaTransactionTemplate.execute(() -> {
-                            String username = genRandomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, "12345");
-                            authUserRepository.create(authUser);
-                            UdUserEntity adressee = userdataUserRepository.create(userEntity(username));
+                            UdUserEntity adressee = createNewUser(username, "12345");
                             userdataUserRepository.sendInvitation(targetEntity, adressee);
                             outcomeInvitations.add(UserJson.fromEntity(adressee, null));
-                            return null;
                         }
                 );
             }
@@ -136,14 +131,11 @@ public class UsersDbClient implements UsersClient {
             ).orElseThrow();
 
             for (int i = 0; i < count; i++) {
+                String username = genRandomUsername();
                 xaTransactionTemplate.execute(() -> {
-                            String username = genRandomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, "12345");
-                            authUserRepository.create(authUser);
-                            UdUserEntity adressee = userdataUserRepository.create(userEntity(username));
+                            UdUserEntity adressee = createNewUser(username, "12345");
                             userdataUserRepository.addFriend(targetEntity, adressee);
                             addedFriends.add(UserJson.fromEntity(adressee, null));
-                            return null;
                         }
                 );
             }
@@ -169,6 +161,13 @@ public class UsersDbClient implements UsersClient {
             userdataUserRepository.findByUsername(username)
                     .ifPresent(userdataUserRepository::remove);
         });
+    }
+
+    @Nonnull
+    private UdUserEntity createNewUser(String username, String password) {
+        AuthUserEntity authUser = authUserEntity(username, password);
+        authUserRepository.create(authUser);
+        return userdataUserRepository.create(userEntity(username));
     }
 
     private UdUserEntity userEntity(String username) {
