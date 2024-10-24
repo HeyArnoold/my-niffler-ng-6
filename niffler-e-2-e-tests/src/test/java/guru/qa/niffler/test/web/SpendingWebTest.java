@@ -35,7 +35,7 @@ class SpendingWebTest {
 
         new MainPage()
                 .search(newDescription)
-                .checkThatTableContainsSpending(newDescription);
+                .checkTableContainsSpendingByDescription(newDescription);
     }
 }
 

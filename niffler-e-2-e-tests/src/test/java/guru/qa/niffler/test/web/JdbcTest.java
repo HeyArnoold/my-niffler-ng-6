@@ -1,9 +1,9 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.enums.CurrencyValues;
 import guru.qa.niffler.service.impl.db.SpendDbClient;
 import guru.qa.niffler.service.impl.db.UsersDbClient;
 import org.junit.jupiter.api.Disabled;

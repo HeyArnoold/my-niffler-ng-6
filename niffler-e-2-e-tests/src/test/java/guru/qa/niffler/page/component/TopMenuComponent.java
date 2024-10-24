@@ -1,10 +1,12 @@
-package guru.qa.niffler.page;
+package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.FriendsPage;
+import guru.qa.niffler.page.ProfilePage;
 
 import static com.codeborne.selenide.Selenide.$;
 
-class TopMenuComponent {
+public class TopMenuComponent {
     private final SelenideElement personIconButton = $("button[aria-label='Menu']");
     private final SelenideElement goToProfileButton = $("[href='/profile']");
     private final SelenideElement goToFriendsButton = $("[href='/people/friends']"); //
