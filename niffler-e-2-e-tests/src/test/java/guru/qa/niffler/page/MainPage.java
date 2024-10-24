@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SpendingTable;
 import guru.qa.niffler.page.component.TopMenuComponent;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -38,16 +39,19 @@ public class MainPage {
         return topMenu.addSpendingPage();
     }
 
+    @Step("Проверка наличия траты по Description: {spendingDescription}")
     public MainPage checkTableContainsSpendingByDescription(String spendingDescription) {
         spendingTable.checkTableContainsSpendDescriptions(spendingDescription);
         return this;
     }
 
+    @Step("'Statistics' хэдер с текстом: {text}")
     public MainPage statisticsHeaderShouldHaveText(String text) {
         statisticsHeader.shouldHave(text(text)).shouldBe(visible);
         return this;
     }
 
+    @Step("'History of Spendings' хэдер с текстом: {text}")
     public MainPage historyOfSpendingHeaderShouldHaveText(String value) {
         historyOfSpendingHeader.shouldHave(text(value)).shouldBe(visible);
         return this;
