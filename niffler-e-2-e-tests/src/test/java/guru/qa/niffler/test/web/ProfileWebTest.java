@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(BrowserExtension.class)
-public class ProfileWebTest {
+class ProfileWebTest {
     private static final Config CFG = Config.getInstance();
 
     @User(

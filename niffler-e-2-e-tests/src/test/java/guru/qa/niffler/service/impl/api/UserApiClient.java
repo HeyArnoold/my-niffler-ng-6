@@ -1,15 +1,19 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl.api;
 
 import guru.qa.niffler.api.UserApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.UsersClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class UserApiClient implements UsersClient {
 
     private final Retrofit retrofit = new Retrofit.Builder()
@@ -32,7 +36,7 @@ public class UserApiClient implements UsersClient {
     }
 
     @Override
-    public UserJson createUser(String username, String password) {
+    public @Nullable UserJson createUser(String username, String password) {
         // todo
         return null;
     }

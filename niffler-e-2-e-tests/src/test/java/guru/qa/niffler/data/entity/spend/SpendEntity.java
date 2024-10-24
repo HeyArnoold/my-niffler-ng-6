@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -51,7 +52,7 @@ public class SpendEntity implements Serializable {
     public SpendEntity() {
     }
 
-    public static SpendEntity fromJson(SpendJson json) {
+    public static @Nonnull SpendEntity fromJson(@Nonnull SpendJson json) {
         SpendEntity se = new SpendEntity();
         se.setId(json.id());
         se.setUsername(json.username());
