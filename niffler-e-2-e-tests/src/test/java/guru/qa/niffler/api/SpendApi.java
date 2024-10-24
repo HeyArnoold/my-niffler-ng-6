@@ -1,9 +1,9 @@
 package guru.qa.niffler.api;
 
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.PeriodValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.enums.CurrencyValues;
+import guru.qa.niffler.model.enums.PeriodValues;
 import retrofit2.Call;
 import retrofit2.http.*;
 

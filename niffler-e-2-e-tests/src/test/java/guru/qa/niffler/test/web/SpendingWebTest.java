@@ -6,12 +6,19 @@ import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.page.EditSpendingPage;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
+import static guru.qa.niffler.utils.RandomDataUtils.genRandomCategory;
+import static guru.qa.niffler.utils.RandomDataUtils.genRandomSentence;
+
 @WebTest
-public class SpendingWebTest {
+class SpendingWebTest {
 
     private static final Config CFG = Config.getInstance();
 
@@ -31,11 +38,30 @@ public class SpendingWebTest {
                 .login("duck", "12345")
                 .editSpending(spend.description())
                 .setNewSpendingDescription(newDescription)
+                .save()
+                .search(newDescription)
+                .checkTableContainsSpendingByDescription(newDescription);
+    }
+
+    @User
+    @Test
+    void addSpendTest(UserJson user) {
+        String category = genRandomCategory();
+        String description = genRandomSentence(2);
+
+        EditSpendingPage spendingPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .addSpending();
+
+        MainPage mainPage = spendingPage
+                .setSpendingCategory(category)
+                .setNewSpendingDescription(description)
+                .setSpendingAmount("10")
+                .setDate(new Date())
                 .save();
 
-        new MainPage()
-                .search(newDescription)
-                .checkThatTableContainsSpending(newDescription);
+        mainPage
+                .checkTableContainsSpendingByDescription(description);
     }
 }
 

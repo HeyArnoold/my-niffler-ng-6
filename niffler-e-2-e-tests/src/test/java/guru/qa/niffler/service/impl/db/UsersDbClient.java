@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl.db;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -10,13 +10,17 @@ import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.hibernate.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.hibernate.UdRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
-import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.enums.CurrencyValues;
+import guru.qa.niffler.service.UsersClient;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import static guru.qa.niffler.utils.RandomDataUtils.genRandomUsername;
 
@@ -35,21 +39,17 @@ public class UsersDbClient implements UsersClient {
     );
 
     @Override
-    public Optional<UserJson> findById(UUID id) {
-        return xaTransactionTemplate.execute(() -> {
-                    Optional<UdUserEntity> byId = userdataUserRepository.findById(id);
-                    return byId.map(entity -> UserJson.fromEntity(entity, null));
-                }
-        );
+    public UserJson findById(UUID id) {
+        return userdataUserRepository
+                .findById(id).map(user -> UserJson.fromEntity(user, null))
+                .orElseThrow();
     }
 
     @Override
-    public Optional<UserJson> findByUsername(String username) {
-        return xaTransactionTemplate.execute(() -> {
-                    Optional<UdUserEntity> byId = userdataUserRepository.findByUsername(username);
-                    return byId.map(entity -> UserJson.fromEntity(entity, null));
-                }
-        );
+    public UserJson findByUsername(String username) {
+        return userdataUserRepository
+                .findByUsername(username).map(user -> UserJson.fromEntity(user, null))
+                .orElseThrow();
     }
 
     public UserJson createUser(String username, String password) {

@@ -12,7 +12,7 @@ import static guru.qa.niffler.utils.RandomDataUtils.genRandomPassword;
 import static guru.qa.niffler.utils.RandomDataUtils.genRandomUsername;
 
 @ExtendWith(BrowserExtension.class)
-public class RegisterWebTest {
+class RegisterWebTest {
     private static final Config CFG = Config.getInstance();
     final String EXPECTED_REGISTRATION_MESSAGE = "Congratulations! You've registered!";
     final String USERNAME_ALREADY_EXISTS_ERROR_TEXT = "Username `duck` already exists";
