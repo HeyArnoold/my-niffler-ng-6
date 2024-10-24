@@ -3,24 +3,51 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.Keys;
+import guru.qa.niffler.page.component.SearchField;
 
 import java.util.List;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 
+@SuppressWarnings("UnusedReturnValue")
 public class FriendsPage {
     private final ElementsCollection friendList = $$("tbody#friends tr");
     private final ElementsCollection friendReqList = $$("#requests tr");
     private final ElementsCollection allPeopleList = $$("tbody#all tr");
 
     private final SelenideElement allPeopleButton = $("[aria-label='People tabs'] [href='/people/all']");
-    private final SelenideElement searchField = $("input[type='text']");
     private final SelenideElement emptyFriendListText = $x("//p[text()='There are no users yet']");
     private final SelenideElement myFriendsHeader = $x("//h2[text()='My friends']");
     private final SelenideElement friendRequestsHeader = $x("//h2[text()='Friend requests']");
+    private final SelenideElement declineConfirmButton = $x("//div[@role='dialog'] //button[text()='Decline']");
+
+    private final SearchField searchField = new SearchField();
+
+    public FriendsPage clickAllPeople() {
+        allPeopleButton.click();
+        return this;
+    }
+
+    public FriendsPage searchFriend(String username) {
+        searchField.search(username);
+        return this;
+    }
+
+    public FriendsPage acceptFriend(String name) {
+        friendReqList.findBy(text(name))
+                .$(byText("Accept")).click();
+        return this;
+    }
+
+    public FriendsPage declineFriend(String name) {
+        friendReqList.findBy(text(name))
+                .$(byText("Decline")).click();
+        declineConfirmButton.click();
+        return this;
+    }
 
     public FriendsPage checkNameInFriendList(String name) {
         friendList.findBy(text(name)).shouldBe(visible);
@@ -78,14 +105,9 @@ public class FriendsPage {
         return this;
     }
 
-    public FriendsPage clickAllPeople() {
-        allPeopleButton.click();
-        return this;
-    }
-
-    public FriendsPage searchFriend(String username) {
-        searchField.sendKeys(username);
-        searchField.sendKeys(Keys.ENTER);
+    public FriendsPage checkNameNotDisplayedOnPage(String name) {
+        $x(String.format("//*[text()='%s']", name))
+                .shouldNotBe(visible);
         return this;
     }
 }

@@ -29,6 +29,15 @@ public class MainPage {
         return topMenu.goToFriendsPage();
     }
 
+    public MainPage search(String spend) {
+        spendingTable.searchSpendingByDescription(spend);
+        return this;
+    }
+
+    public EditSpendingPage addSpending() {
+        return topMenu.addSpendingPage();
+    }
+
     public MainPage checkTableContainsSpendingByDescription(String spendingDescription) {
         spendingTable.checkTableContainsSpendDescriptions(spendingDescription);
         return this;
@@ -41,11 +50,6 @@ public class MainPage {
 
     public MainPage historyOfSpendingHeaderShouldHaveText(String value) {
         historyOfSpendingHeader.shouldHave(text(value)).shouldBe(visible);
-        return this;
-    }
-
-    public MainPage search(String spend) {
-        spendingTable.searchSpendingByDescription(spend);
         return this;
     }
 }

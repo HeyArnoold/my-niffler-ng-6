@@ -10,7 +10,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
@@ -24,15 +23,15 @@ public class UserApiClient implements UsersClient {
     private final UserApi authUserApi = retrofit.create(UserApi.class);
 
     @Override
-    public Optional<UserJson> findById(UUID id) {
+    public UserJson findById(UUID id) {
         // todo
-        return Optional.empty();
+        return null;
     }
 
     @Override
-    public Optional<UserJson> findByUsername(String username) {
+    public UserJson findByUsername(String username) {
         // todo
-        return Optional.empty();
+        return null;
     }
 
     @Override

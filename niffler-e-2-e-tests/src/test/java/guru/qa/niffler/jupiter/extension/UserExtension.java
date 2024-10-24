@@ -46,7 +46,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                     UserJson userJson = context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
 
                     UserJson user = userJson == null
-                            ? usersClient.findByUsername(userAnno.username()).orElseThrow()
+                            ? usersClient.findByUsername(userAnno.username())
                             : userJson;
 
                     List<UserJson> incomeInvitation = usersClient.createIncomeInvitations(user, userAnno.incomeInvitations());

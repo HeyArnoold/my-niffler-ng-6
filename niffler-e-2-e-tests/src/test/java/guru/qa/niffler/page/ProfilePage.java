@@ -3,16 +3,20 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
+@SuppressWarnings("UnusedReturnValue")
 public class ProfilePage {
     private final ElementsCollection categoryList = $$(".MuiChip-root");
     private final SelenideElement archiveButtonSubmit = $x("//button[text()='Archive']");
     private final SelenideElement unarchiveButtonSubmit = $x("//button[text()='Unarchive']");
     private final SelenideElement successArchiveMessage = $(".MuiAlert-message");
     private final SelenideElement showArchivedCategoriesCheckbox = $("input[type='checkbox']");
+
+    private final SelenideElement nameInput = $("#name");
+    private final SelenideElement userName = $("#username");
+    private final SelenideElement saveChangesButton = $x("//button[text()='Save changes']");
 
     public ProfilePage clickArchiveCategoryByName(String categoryName) {
         categoryList
@@ -44,6 +48,22 @@ public class ProfilePage {
 
     public ProfilePage clickUnarchiveButtonSubmit() {
         unarchiveButtonSubmit.click();
+        return this;
+    }
+
+    public ProfilePage setName(String name) {
+        nameInput.clear();
+        nameInput.setValue(name);
+        return this;
+    }
+
+    public ProfilePage saveChanges() {
+        saveChangesButton.click();
+        return this;
+    }
+
+    public ProfilePage checkName(String name) {
+        nameInput.should(value(name));
         return this;
     }
 

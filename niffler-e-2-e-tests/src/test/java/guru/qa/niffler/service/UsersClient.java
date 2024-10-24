@@ -3,14 +3,13 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.model.UserJson;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface UsersClient {
 
-    Optional<UserJson> findById(UUID id);
+    UserJson findById(UUID id);
 
-    Optional<UserJson> findByUsername(String username);
+    UserJson findByUsername(String username);
 
     UserJson createUser(String username, String password);
 

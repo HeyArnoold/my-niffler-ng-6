@@ -17,4 +17,8 @@ public class RandomDataUtils {
     public static String genRandomCategory() {
         return faker.commerce().department();
     }
+
+    public static String genRandomSentence(int wordsCount) {
+        return faker.lorem().sentence(wordsCount);
+    }
 }
