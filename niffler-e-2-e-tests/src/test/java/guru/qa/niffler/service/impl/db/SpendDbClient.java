@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl.db;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
@@ -10,9 +10,12 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.service.SpendClient;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
+@ParametersAreNonnullByDefault
 public class SpendDbClient implements SpendClient {
 
     private static final Config CFG = Config.getInstance();
@@ -22,7 +25,6 @@ public class SpendDbClient implements SpendClient {
 
     private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(CFG.authJdbcUrl(), CFG.userdataJdbcUrl());
 
-    @SuppressWarnings("unchecked")
     public SpendJson createSpend(SpendJson spend) {
         SpendEntity spendEntity = SpendEntity.fromJson(spend);
 

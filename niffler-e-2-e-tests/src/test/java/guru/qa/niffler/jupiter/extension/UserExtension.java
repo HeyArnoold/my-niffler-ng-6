@@ -4,7 +4,7 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.UsersDbClient;
+import guru.qa.niffler.service.impl.db.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -46,7 +46,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                     UserJson userJson = context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
 
                     UserJson user = userJson == null
-                            ? usersClient.findByUsername(userAnno.username()).orElseThrow()
+                            ? usersClient.findByUsername(userAnno.username())
                             : userJson;
 
                     List<UserJson> incomeInvitation = usersClient.createIncomeInvitations(user, userAnno.incomeInvitations());

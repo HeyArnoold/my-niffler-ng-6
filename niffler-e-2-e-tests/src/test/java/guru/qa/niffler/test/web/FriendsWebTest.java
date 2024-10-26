@@ -10,7 +10,7 @@ import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
 @WebTest
-public class FriendsWebTest {
+class FriendsWebTest {
     private static final Config CFG = Config.getInstance();
 
     @User(
@@ -67,5 +67,37 @@ public class FriendsWebTest {
                 .clickAllPeople()
                 .checkNameInAllPeopleList(user.testData().outcome().getFirst())
                 .checkOutcomeInvitationInAllPeopleList(user.testData().outcome().getFirst());
+    }
+
+    @User(
+            incomeInvitations = 1
+    )
+    @Test
+    void acceptInvitation(UserJson user) {
+        String incomeUserName = user.testData().income().getFirst();
+
+        FriendsPage friendsPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .goToFriends();
+
+        friendsPage
+                .acceptFriend(incomeUserName)
+                .checkNameInFriendList(incomeUserName);
+    }
+
+    @User(
+            incomeInvitations = 1
+    )
+    @Test
+    void declineInvitation(UserJson user) {
+        String incomeUserName = user.testData().income().getFirst();
+
+        FriendsPage friendsPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .goToFriends();
+
+        friendsPage
+                .declineFriend(incomeUserName)
+                .checkNameNotDisplayedOnPage(incomeUserName);
     }
 }

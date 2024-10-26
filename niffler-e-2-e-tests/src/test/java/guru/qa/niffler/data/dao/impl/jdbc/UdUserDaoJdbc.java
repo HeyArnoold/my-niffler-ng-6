@@ -3,7 +3,7 @@ package guru.qa.niffler.data.dao.impl.jdbc;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
-import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.enums.CurrencyValues;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

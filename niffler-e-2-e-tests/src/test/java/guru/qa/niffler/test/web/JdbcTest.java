@@ -1,11 +1,11 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.SpendDbClient;
-import guru.qa.niffler.service.UsersDbClient;
+import guru.qa.niffler.model.enums.CurrencyValues;
+import guru.qa.niffler.service.impl.db.SpendDbClient;
+import guru.qa.niffler.service.impl.db.UsersDbClient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Date;
 
 @Disabled
-public class JdbcTest {
+class JdbcTest {
 
     private static final UsersDbClient usersDbClient = new UsersDbClient();
 
