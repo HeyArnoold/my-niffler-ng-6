@@ -3,19 +3,14 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.model.UserJson;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface UsersClient {
-
-    UserJson findById(UUID id);
-
-    UserJson findByUsername(String username);
 
     UserJson createUser(String username, String password);
 
     List<UserJson> createIncomeInvitations(UserJson targetUser, int count);
 
-    void createIncomeInvitations(UserJson userFrom, UserJson user);
+    void createIncomeInvitations(UserJson userFrom, UserJson targetUser);
 
     List<UserJson> createOutcomeInvitations(UserJson targetUser, int count);
 
@@ -24,6 +19,4 @@ public interface UsersClient {
     List<UserJson> createFriends(UserJson targetUser, int count);
 
     void createFriends(UserJson user1, UserJson user2);
-
-    void deleteUser(String username);
 }

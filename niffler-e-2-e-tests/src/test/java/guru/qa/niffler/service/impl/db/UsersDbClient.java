@@ -38,14 +38,12 @@ public class UsersDbClient implements UsersClient {
             CFG.userdataJdbcUrl()
     );
 
-    @Override
     public UserJson findById(UUID id) {
         return userdataUserRepository
                 .findById(id).map(user -> UserJson.fromEntity(user, null))
                 .orElseThrow();
     }
 
-    @Override
     public UserJson findByUsername(String username) {
         return userdataUserRepository
                 .findByUsername(username).map(user -> UserJson.fromEntity(user, null))
@@ -86,8 +84,8 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
-    public void createIncomeInvitations(UserJson userFrom, UserJson user) {
-        UdUserEntity targetEntity = userdataUserRepository.findById(user.id()).orElseThrow();
+    public void createIncomeInvitations(UserJson userFrom, UserJson targetUser) {
+        UdUserEntity targetEntity = userdataUserRepository.findById(targetUser.id()).orElseThrow();
         UdUserEntity userFromEntity = userdataUserRepository.findById(userFrom.id()).orElseThrow();
 
         xaTransactionTemplate.execute(() -> userdataUserRepository.sendInvitation(userFromEntity, targetEntity));
@@ -151,7 +149,6 @@ public class UsersDbClient implements UsersClient {
         xaTransactionTemplate.execute(() -> userdataUserRepository.addFriend(userEntity1, userEntity2));
     }
 
-    @Override
     public void deleteUser(String username) {
         xaTransactionTemplate.execute(() -> {
             authUserRepository.findByUsername(username)
