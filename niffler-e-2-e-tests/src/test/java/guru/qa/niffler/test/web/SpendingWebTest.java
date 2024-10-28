@@ -58,7 +58,8 @@ class SpendingWebTest {
                 .setNewSpendingDescription(description)
                 .setSpendingAmount("10")
                 .setDate(new Date())
-                .save();
+                .save()
+                .checkAlertMessage("New spending is successfully created");
 
         mainPage
                 .checkTableContainsSpendingByDescription(description);

@@ -13,9 +13,9 @@ public class Header extends BaseComponent<Header> {
         super($("#root header"));
     }
 
-    private final SelenideElement personIconButton = getSelf().$("button[aria-label='Menu']");
-    private final SelenideElement goToMainButton = getSelf().$("[href='/main']");
-    private final SelenideElement newSpendingButton = getSelf().$x("//*[text()='New spending']");
+    private final SelenideElement personIconButton = self.$("button[aria-label='Menu']");
+    private final SelenideElement goToMainButton = self.$("[href='/main']");
+    private final SelenideElement newSpendingButton = self.$("a[href*='/spending']");
 
     private final SelenideElement goToProfileButton = $("[role='menu'] [href='/profile']");
     private final SelenideElement goToFriendsButton = $("[role='menu'] [href='/people/friends']"); //

@@ -18,7 +18,7 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
         super($("#spendings"));
     }
 
-    private final SelenideElement spendsTable = getSelf().$("tbody");
+    private final SelenideElement spendsTable = self.$("tbody");
     private final SelenideElement periodButton = $(".MuiBox-root #period");
     private final SelenideElement deleteButton = $(".MuiBox-root #delete");
     private final SelenideElement deleteConfirmButton = $x("//div[@role='dialog'] //button[text()='Delete']");

@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(BrowserExtension.class)
 class LoginWebTest {
     private static final Config CFG = Config.getInstance();
-    private static final String STATISTICS_TEXT = "Statistics";
-    private static final String HISTORY_OF_SPENDING_TEXT = "History of Spendings";
     private static final String FAILED_LOGIN_MESSAGE = "Неверные учетные данные пользователя";
 
 

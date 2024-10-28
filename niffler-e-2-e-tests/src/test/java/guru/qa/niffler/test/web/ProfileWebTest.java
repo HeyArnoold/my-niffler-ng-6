@@ -20,7 +20,7 @@ class ProfileWebTest {
 
     @User(
             username = "duck",
-            categories = @Category(archived = false)
+            categories = @Category()
     )
     @Test
     void archivedCategoryShouldNotPresentInCategoriesList(CategoryJson category) {
@@ -66,6 +66,7 @@ class ProfileWebTest {
         profilePage
                 .setName(name)
                 .saveChanges()
-                .checkName(name);
+                .checkName(name)
+                .checkAlertMessage("Profile successfully updated");
     }
 }

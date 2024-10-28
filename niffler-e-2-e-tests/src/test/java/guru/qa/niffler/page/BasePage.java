@@ -13,7 +13,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "UnusedReturnValue"})
 @ParametersAreNonnullByDefault
 public abstract class BasePage<T extends BasePage<?>> {
 

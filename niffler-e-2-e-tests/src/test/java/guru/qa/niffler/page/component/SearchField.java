@@ -14,14 +14,14 @@ public class SearchField extends BaseComponent<SearchField> {
 
     @Step("Поиск по значению: {value}")
     public SearchField search(String value) {
-        getSelf().sendKeys(value);
-        getSelf().sendKeys(Keys.ENTER);
+        self.sendKeys(value);
+        self.sendKeys(Keys.ENTER);
         return this;
     }
 
     @Step("Очистить строку поиска")
     public SearchField clearIfNotEmpty() {
-        getSelf().clear();
+        self.clear();
         return this;
     }
 }
