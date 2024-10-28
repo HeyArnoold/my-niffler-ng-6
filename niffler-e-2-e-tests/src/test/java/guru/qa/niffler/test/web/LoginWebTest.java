@@ -38,8 +38,7 @@ class LoginWebTest {
         MainPage mainPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password());
 
-        mainPage.statisticsHeaderShouldHaveText(STATISTICS_TEXT)
-                .historyOfSpendingHeaderShouldHaveText(HISTORY_OF_SPENDING_TEXT);
+        mainPage.checkThatPageLoaded();
     }
 
     @Test

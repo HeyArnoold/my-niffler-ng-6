@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class LoginPage {
+public class LoginPage extends BasePage<LoginPage> {
     private final SelenideElement usernameInput = $("input[name='username']");
     private final SelenideElement passwordInput = $("input[name='password']");
     private final SelenideElement submitButton = $("button[type='submit']");
@@ -49,5 +49,12 @@ public class LoginPage {
     @Step("Должна отображаться ошибка с текстом: {text}")
     public void formErrorShouldHaveText(String text) {
         formError.shouldHave(text(text)).shouldBe(visible);
+    }
+
+    @Override
+    public LoginPage checkThatPageLoaded() {
+        usernameInput.should(visible);
+        passwordInput.should(visible);
+        return this;
     }
 }

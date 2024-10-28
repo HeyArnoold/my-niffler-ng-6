@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 
 @SuppressWarnings("UnusedReturnValue")
-public class FriendsPage {
+public class FriendsPage extends BasePage<FriendsPage> {
     private final ElementsCollection friendList = $$("tbody#friends tr");
     private final ElementsCollection friendReqList = $$("#requests tr");
     private final ElementsCollection allPeopleList = $$("tbody#all tr");
@@ -112,6 +112,12 @@ public class FriendsPage {
     public FriendsPage checkNameNotDisplayedOnPage(String name) {
         $x(String.format("//*[text()='%s']", name))
                 .shouldNotBe(visible);
+        return this;
+    }
+
+    @Override
+    public FriendsPage checkThatPageLoaded() {
+        allPeopleButton.shouldBe(visible);
         return this;
     }
 }

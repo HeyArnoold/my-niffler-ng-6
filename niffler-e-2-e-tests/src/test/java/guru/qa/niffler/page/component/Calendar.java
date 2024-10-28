@@ -8,7 +8,12 @@ import java.util.Date;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public class Calendar {
+@SuppressWarnings("UnusedReturnValue")
+public class Calendar extends BaseComponent<Calendar> {
+
+    public Calendar() {
+        super($(".MuiPickersLayout-root"));
+    }
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 

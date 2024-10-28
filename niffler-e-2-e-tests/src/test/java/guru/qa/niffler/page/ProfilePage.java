@@ -8,7 +8,7 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 @SuppressWarnings("UnusedReturnValue")
-public class ProfilePage {
+public class ProfilePage extends BasePage<ProfilePage> {
     private final ElementsCollection categoryList = $$(".MuiChip-root");
     private final SelenideElement archiveButtonSubmit = $x("//button[text()='Archive']");
     private final SelenideElement unarchiveButtonSubmit = $x("//button[text()='Unarchive']");
@@ -94,6 +94,12 @@ public class ProfilePage {
     @Step("Проверка что архивная категория {categoryName} не отображается")
     public ProfilePage shouldNotBeVisibleArchiveCategory(String categoryName) {
         categoryList.findBy(text(categoryName)).shouldNotBe(visible);
+        return this;
+    }
+
+    @Override
+    public ProfilePage checkThatPageLoaded() {
+        nameInput.should(visible);
         return this;
     }
 }

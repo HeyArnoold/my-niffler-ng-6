@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class RegisterPage {
+public class RegisterPage extends BasePage<RegisterPage> {
     private final SelenideElement usernameInput = $("input[name='username']");
     private final SelenideElement passwordInput = $("input[name='password']");
     private final SelenideElement submitPasswordInput = $("input[name='passwordSubmit']");
@@ -48,5 +48,13 @@ public class RegisterPage {
     @Step("Проверка сообщения об ошибке: {text}")
     public void formErrorShouldHaveText(String text) {
         formError.shouldHave(text(text)).shouldBe(visible);
+    }
+
+    @Override
+    public RegisterPage checkThatPageLoaded() {
+        usernameInput.should(visible);
+        passwordInput.should(visible);
+        submitPasswordInput.should(visible);
+        return this;
     }
 }
