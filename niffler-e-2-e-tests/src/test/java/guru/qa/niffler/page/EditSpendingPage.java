@@ -6,9 +6,10 @@ import io.qameta.allure.Step;
 
 import java.util.Date;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class EditSpendingPage {
+public class EditSpendingPage extends BasePage<EditSpendingPage> {
     private final SelenideElement descriptionInput = $("#description");
     private final SelenideElement saveBtn = $("#save");
     private final SelenideElement amountInput = $("#amount");
@@ -43,5 +44,11 @@ public class EditSpendingPage {
     public MainPage save() {
         saveBtn.click();
         return new MainPage();
+    }
+
+    @Override
+    public EditSpendingPage checkThatPageLoaded() {
+        amountInput.should(visible);
+        return this;
     }
 }

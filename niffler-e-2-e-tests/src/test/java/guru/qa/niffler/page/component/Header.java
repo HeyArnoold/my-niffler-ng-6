@@ -7,10 +7,15 @@ import io.qameta.allure.Step;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
-public class TopMenuComponent {
-    private final SelenideElement personIconButton = $("header button[aria-label='Menu']");
-    private final SelenideElement goToMainButton = $("header [href='/main']");
-    private final SelenideElement newSpendingButton = $x("//header //*[text()='New spending']");
+public class Header extends BaseComponent<Header> {
+
+    public Header() {
+        super($("#root header"));
+    }
+
+    private final SelenideElement personIconButton = self.$("button[aria-label='Menu']");
+    private final SelenideElement goToMainButton = self.$("[href='/main']");
+    private final SelenideElement newSpendingButton = self.$("a[href*='/spending']");
 
     private final SelenideElement goToProfileButton = $("[role='menu'] [href='/profile']");
     private final SelenideElement goToFriendsButton = $("[role='menu'] [href='/people/friends']"); //

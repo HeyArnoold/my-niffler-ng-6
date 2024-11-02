@@ -1,20 +1,21 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.SpendingTable;
-import guru.qa.niffler.page.component.TopMenuComponent;
 import io.qameta.allure.Step;
+
+import javax.annotation.Nonnull;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @SuppressWarnings("UnusedReturnValue")
-public class MainPage {
+public class MainPage extends BasePage<MainPage> {
     private final SelenideElement statisticsHeader = $("#stat h2");
-    private final SelenideElement historyOfSpendingHeader = $("#spendings h2");
 
-    private final TopMenuComponent topMenu = new TopMenuComponent();
+    private final Header topMenu = new Header();
     private final SpendingTable spendingTable = new SpendingTable();
 
 
@@ -45,15 +46,12 @@ public class MainPage {
         return this;
     }
 
-    @Step("'Statistics' хэдер с текстом: {text}")
-    public MainPage statisticsHeaderShouldHaveText(String text) {
-        statisticsHeader.shouldHave(text(text)).shouldBe(visible);
-        return this;
-    }
-
-    @Step("'History of Spendings' хэдер с текстом: {text}")
-    public MainPage historyOfSpendingHeaderShouldHaveText(String value) {
-        historyOfSpendingHeader.shouldHave(text(value)).shouldBe(visible);
+    @Step("Check that page is loaded")
+    @Override
+    public @Nonnull MainPage checkThatPageLoaded() {
+        topMenu.getSelf().should(visible).shouldHave(text("Niffler"));
+        statisticsHeader.should(visible).shouldHave(text("Statistics"));
+        spendingTable.getSelf().should(visible).shouldHave(text("History of Spendings"));
         return this;
     }
 }

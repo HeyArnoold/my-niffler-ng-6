@@ -12,9 +12,13 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 @SuppressWarnings("UnusedReturnValue")
-public class SpendingTable {
+public class SpendingTable extends BaseComponent<SpendingTable> {
 
-    private final SelenideElement spendsTable = $("#spendings tbody");
+    public SpendingTable() {
+        super($("#spendings"));
+    }
+
+    private final SelenideElement spendsTable = self.$("tbody");
     private final SelenideElement periodButton = $(".MuiBox-root #period");
     private final SelenideElement deleteButton = $(".MuiBox-root #delete");
     private final SelenideElement deleteConfirmButton = $x("//div[@role='dialog'] //button[text()='Delete']");

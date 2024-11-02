@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(BrowserExtension.class)
 class LoginWebTest {
     private static final Config CFG = Config.getInstance();
-    private static final String STATISTICS_TEXT = "Statistics";
-    private static final String HISTORY_OF_SPENDING_TEXT = "History of Spendings";
     private static final String FAILED_LOGIN_MESSAGE = "Неверные учетные данные пользователя";
 
 
@@ -38,8 +36,7 @@ class LoginWebTest {
         MainPage mainPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(user.username(), user.testData().password());
 
-        mainPage.statisticsHeaderShouldHaveText(STATISTICS_TEXT)
-                .historyOfSpendingHeaderShouldHaveText(HISTORY_OF_SPENDING_TEXT);
+        mainPage.checkThatPageLoaded();
     }
 
     @Test
