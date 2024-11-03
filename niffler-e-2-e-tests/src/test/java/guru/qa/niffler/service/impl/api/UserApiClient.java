@@ -8,6 +8,7 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -144,6 +145,11 @@ public class UserApiClient implements UsersClient {
         checkUserExist(user2);
 
         udUserApiClient.acceptInvitation(user1.username(), user2.username());
+    }
+
+
+    public @Nonnull List<UserJson> allUsers(String username, @Nullable String searchQuery) {
+        return udUserApiClient.allUsers(username, searchQuery);
     }
 
     private void checkUserExist(UserJson user) {

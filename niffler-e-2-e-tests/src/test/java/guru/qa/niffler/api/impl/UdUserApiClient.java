@@ -9,6 +9,8 @@ import retrofit2.Response;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,7 +37,7 @@ public class UdUserApiClient extends RestClient {
     }
 
     @Step("Отправка приглашения от пользователя {username} пользователю {targetUsername}")
-    public @Nullable UserJson sendInvitation(@Nonnull String username, @Nonnull String targetUsername) {
+    public void sendInvitation(@Nonnull String username, @Nonnull String targetUsername) {
         final Response<UserJson> response;
         try {
             response = userApi.sendInvitation(username, targetUsername)
@@ -44,11 +46,10 @@ public class UdUserApiClient extends RestClient {
             throw new AssertionError(e);
         }
         assertEquals(200, response.code());
-        return response.body();
     }
 
     @Step("Принятие приглашения от пользователя {username} пользователю {targetUsername}")
-    public @Nullable UserJson acceptInvitation(@Nonnull String username, @Nonnull String targetUsername) {
+    public void acceptInvitation(@Nonnull String username, @Nonnull String targetUsername) {
         final Response<UserJson> response;
         try {
             response = userApi.acceptInvitation(username, targetUsername)
@@ -57,6 +58,20 @@ public class UdUserApiClient extends RestClient {
             throw new AssertionError(e);
         }
         assertEquals(200, response.code());
-        return response.body();
+    }
+
+    @Nonnull
+    public List<UserJson> allUsers(@Nonnull String username, @Nullable String searchQuery) {
+        final Response<List<UserJson>> response;
+        try {
+            response = userApi.allUsers(username, searchQuery)
+                    .execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body() != null
+                ? response.body()
+                : Collections.emptyList();
     }
 }
