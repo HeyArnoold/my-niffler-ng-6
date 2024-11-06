@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.web;
+package guru.qa.niffler.test.api;
 
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.UserJson;
@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Order(Integer.MAX_VALUE)
-public class FullUsersTest {
+@Order(1)
+public class EmptyUsersTest {
 
     @User
     @Test
-    void shouldReturnNotEmptyUsersListTest(UserJson user) {
+    void shouldReturnEmptyUsersListTest(UserJson user) {
         UserApiClient usersApiClient = new UserApiClient();
         List<UserJson> response = usersApiClient.allUsers(user.username(), null);
-        assertFalse(response.isEmpty(), "Список пользователей должен быть не пустым");
+        assertTrue(response.isEmpty(), "Список пользователей должен быть пустым");
     }
 }
