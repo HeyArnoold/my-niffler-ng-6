@@ -2,10 +2,17 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
+
+import javax.annotation.Nonnull;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SuppressWarnings("UnusedReturnValue")
 public class ProfilePage extends BasePage<ProfilePage> {
@@ -14,6 +21,8 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement unarchiveButtonSubmit = $x("//button[text()='Unarchive']");
     private final SelenideElement successArchiveMessage = $(".MuiAlert-message");
     private final SelenideElement showArchivedCategoriesCheckbox = $("input[type='checkbox']");
+    private final SelenideElement photoInput = $("input[type='file']");
+    private final SelenideElement profileImage = $(".MuiAvatar-img");
 
     private final SelenideElement nameInput = $("#name");
     private final SelenideElement saveChangesButton = $x("//button[text()='Save changes']");
@@ -100,6 +109,22 @@ public class ProfilePage extends BasePage<ProfilePage> {
     @Override
     public ProfilePage checkThatPageLoaded() {
         nameInput.should(visible);
+        return this;
+    }
+
+    @Step("Upload photo from classpath")
+    @Nonnull
+    public ProfilePage uploadPhotoFromClasspath(String path) {
+        photoInput.uploadFromClasspath(path);
+        return this;
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    @Step("Check profile image matches the expected image")
+    @Nonnull
+    public ProfilePage checkProfileImage(BufferedImage expectedImage) throws IOException {
+        BufferedImage actualImage = ImageIO.read(profileImage.screenshot());
+        assertFalse(new ScreenDiffResult(actualImage, expectedImage));
         return this;
     }
 }
