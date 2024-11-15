@@ -2,14 +2,19 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
 import guru.qa.niffler.page.enums.PeriodWeb;
+import io.qameta.allure.Step;
+
+import javax.annotation.Nonnull;
 
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
+import static guru.qa.niffler.condition.SpendConditions.spends;
 
 @SuppressWarnings("UnusedReturnValue")
 public class SpendingTable extends BaseComponent<SpendingTable> {
@@ -59,6 +64,13 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
 
     public SpendingTable checkTableSize(int expectedSize) {
         spendsTable.$$(spendingRow).shouldHave(size(expectedSize));
+        return this;
+    }
+
+    @Step("Check that spend table contains spends {expectedSpends}")
+    @Nonnull
+    public SpendingTable checkSpendingTable(SpendJson... expectedSpends) {
+        spendsTable.$$(spendingRow).should(spends(expectedSpends));
         return this;
     }
 }
