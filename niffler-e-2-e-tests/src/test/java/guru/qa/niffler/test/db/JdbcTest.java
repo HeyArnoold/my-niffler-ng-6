@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.web;
+package guru.qa.niffler.test.db;
 
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
@@ -59,7 +59,7 @@ class JdbcTest {
     }
 
     @ValueSource(strings = {
-            "avril.green"
+            "dwight.strosin"
     })
     @ParameterizedTest
     void deleteTest(String uname) {

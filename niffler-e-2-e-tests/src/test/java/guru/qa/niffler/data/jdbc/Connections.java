@@ -12,6 +12,7 @@ public class Connections {
 
     private static final Map<String, JdbcConnectionHolder> holders = new ConcurrentHashMap<>();
 
+    @Nonnull
     public static JdbcConnectionHolder holder(@Nonnull String jdbcUrl) {
         return holders.computeIfAbsent(
                 jdbcUrl,
@@ -21,6 +22,7 @@ public class Connections {
         );
     }
 
+    @Nonnull
     public static JdbcConnectionHolders holders(@Nonnull String... jdbcUrl) {
         List<JdbcConnectionHolder> result = new ArrayList<>();
         for (String url : jdbcUrl) {
