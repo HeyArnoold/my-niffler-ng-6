@@ -69,6 +69,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
     return parameterContext.getParameter().getType().isAssignableFrom(SpendJson[].class);
   }
 
+  @SuppressWarnings("DataFlowIssue")
   @Override
   public SpendJson[] resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
     return (SpendJson[]) extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class).toArray();

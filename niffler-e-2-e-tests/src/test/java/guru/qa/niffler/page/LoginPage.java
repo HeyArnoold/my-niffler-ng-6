@@ -10,7 +10,9 @@ import static com.codeborne.selenide.Selenide.$;
 public class LoginPage extends BasePage<LoginPage> {
     private final SelenideElement usernameInput = $("input[name='username']");
     private final SelenideElement passwordInput = $("input[name='password']");
-    private final SelenideElement submitButton = $("button[type='submit']");
+
+    private static final SelenideElement submitButton = $("button[type='submit']");
+
     private final SelenideElement createNewAccountButton = $(".form__register");
     private final SelenideElement formError = $(".form__error");
 
