@@ -52,4 +52,11 @@ enum LocalConfig implements Config {
   public String ghUrl() {
     return "https://api.github.com/";
   }
+
+  @Override
+  public String kafkaAddress() {
+    return "127.0.0.1:9092";
+  }
+
+
 }

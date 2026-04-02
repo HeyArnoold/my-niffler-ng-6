@@ -52,4 +52,11 @@ public enum DockerConfig implements Config {
     public String ghUrl() {
         return "";
     }
+
+    @Override
+    public String kafkaAddress() {
+        return "kafka:9092";
+    }
+
+
 }

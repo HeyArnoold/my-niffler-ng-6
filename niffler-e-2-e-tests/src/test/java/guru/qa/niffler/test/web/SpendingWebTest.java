@@ -1,6 +1,8 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Bubble;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
@@ -169,6 +171,112 @@ class SpendingWebTest {
         Thread.sleep(1000);
         mainPage
                 .checkStatisticImage(expectedStatisticImage);
+    }
+
+    @User(
+            spendings = @Spending(
+                    category = "Обучение",
+                    description = "Обучение Advanced 2.0",
+                    amount = 79990
+            )
+    )
+    @Test
+    void checkStatBubbleContent(UserJson user) throws InterruptedException {
+        MainPage mainPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password());
+
+        Thread.sleep(3000);
+
+        Bubble bubble = new Bubble(Color.yellow, "Обучение 79990 ₽");
+        mainPage.checkBubbles(bubble);
+    }
+
+    @User(
+            categories = {
+                    @Category(name = "Обучение"),
+                    @Category(name = "Развлечения")
+            },
+            spendings = {
+                    @Spending(
+                            category = "Обучение",
+                            description = "Обучение Advanced 2.0",
+                            amount = 1000
+                    ),
+                    @Spending(
+                            category = "Развлечения",
+                            description = "Поход в кино",
+                            amount = 100
+                    )
+            }
+    )
+    @Test
+    void checkStatBubblesInAnyOrder(UserJson user) throws InterruptedException {
+        MainPage mainPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password());
+
+        Thread.sleep(3000);
+
+        Bubble bubble1 = new Bubble(Color.yellow, "Обучение 1000 ₽");
+        Bubble bubble2 = new Bubble(Color.green, "Развлечения 100 ₽");
+        mainPage.checkBubblesInAnyOrder(bubble2, bubble1);
+    }
+
+    @User(
+            categories = {
+                    @Category(name = "Обучение"),
+                    @Category(name = "Развлечения")
+            },
+            spendings = {
+                    @Spending(
+                            category = "Обучение",
+                            description = "Обучение Advanced 2.0",
+                            amount = 1000
+                    ),
+                    @Spending(
+                            category = "Развлечения",
+                            description = "Поход в кино",
+                            amount = 100
+                    )
+            }
+    )
+    @Test
+    void checkStatBubbleContainsAmongOtherBubbles(UserJson user) throws InterruptedException {
+        MainPage mainPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password());
+
+        Thread.sleep(3000);
+
+        Bubble bubble = new Bubble(Color.yellow, "Обучение 1000 ₽");
+        mainPage.checkBubblesContains(bubble);
+    }
+
+    @User(
+            categories = {
+                    @Category(name = "Обучение"),
+                    @Category(name = "Развлечения")
+            },
+            spendings = {
+                    @Spending(
+                            category = "Обучение",
+                            description = "Обучение Advanced 2.0",
+                            amount = 1000
+                    ),
+                    @Spending(
+                            category = "Развлечения",
+                            description = "Поход в кино",
+                            amount = 100
+                    )
+            }
+    )
+    @Test
+    void checkSpendsExistInTable(UserJson user) throws InterruptedException {
+        MainPage mainPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(user.username(), user.testData().password());
+
+        Thread.sleep(3000);
+
+        List<SpendJson> expectedSpends = user.testData().spendings();
+        mainPage.checkSpendingTable(expectedSpends.toArray(new SpendJson[0]));
     }
 }
 
